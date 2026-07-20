@@ -121,3 +121,19 @@ printable primitive trace layer
 ```
 
 The trace process contains no structural pass count or bridge limit. API v1 files and imports remain available for the older records.
+
+
+## Structural coupon pipeline
+
+```text
+process profile + nozzle
+        ↓ derived strand width/height
+count boundary
+        ↓ ordered lower and upper paths
+structural ribbon geometry
+        ↓ direct-contact Z placement
+printable orthogonal coupon
+```
+
+The path files never create solids. Geometry files never choose catalog
+records. `main.scad` resolves records and orchestrates the pipeline.

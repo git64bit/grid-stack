@@ -28,10 +28,14 @@ Generate one printable primitive trace layer from independently configured paral
 
 Promote the accepted variable trace object into separate PLA+ and TPU recipes. Add API v2 trace-process and printer records without changing API v1.
 
+## Batch 008 — First structural stack coupon
+
+Derive the `0.8 × 0.4 mm` structural ribbon from the qualified process and render one direct-contact 3 × 3, 6 mm-span, X/Y coupon. Keep the lower external lead-in, start the upper layer on a supported crossing, and reject positive vertical gaps.
+
 ## Next
 
-Develop the composed `0.8 × 0.4 mm` structural strand from qualified primitive traces, then create one printable two-orientation stack coupon. Generate the full twelve-case span/gap recipe set only after that geometry is accepted.
+Print and inspect the direct-contact coupon. If accepted, promote it into an immutable saved-object recipe and design the anchor/support rule required for 1–3 mm vertical-gap coupons.
 
 ## Later batches
 
-Dimension-envelope fitting reports, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.
+Full span/gap recipe generation, dimension-envelope fitting reports, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.

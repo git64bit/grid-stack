@@ -26,24 +26,38 @@ Each record is `[axis_min, axis_max, perpendicular_position]`. Trace lengths and
 
 For the current 0.4 mm nozzle and 0.2 mm deposited layer, the output is one `0.4 × 0.2 mm` primitive trace. It is not the qualified `0.8 × 0.4 mm` structural strand.
 
-## Batch 007
+## Batch 008
 
-Batch 007 promotes the accepted first-layer object into immutable PLA+ and TPU recipes:
+Batch 008 adds the first printable composed structural stack. In `main.scad`,
+the default project is:
 
 ```text
-objects/printed/first-layer-0u2Z-variable-50x18-pla-plus-0p4-v1.scad
-objects/printed/first-layer-0u2Z-variable-50x18-tpu-0p4-v1.scad
+COUPON_3X3_SPAN6_GAP0_DIRECT
 ```
 
-These files use API version 2, embed source commit `79f36da`, and separate primitive-trace process data from structural-strand bridge/pass data.
+The lower X path and upper Y path are each composed from the qualified process:
+
+```text
+0.4 × 0.2 mm primitive trace
+2 traces wide × 2 layers high
+0.8 × 0.4 mm structural strand
+```
+
+The two structural paths are in direct contact, producing a total modeled stack
+height of 0.8 mm. Positive vertical gaps remain disabled until an anchor/support
+strategy is defined.
+
+Batch 007 immutable first-layer recipes remain under `objects/printed/`.
 
 ## Output modes
 
 ```text
-trace_layer   printable geometry, no numbers
-path_debug    numbered non-printable centerline diagnostic
-report_only   validation and dimensions only
+structural_coupon   printable direct-contact X/Y structural stack in main.scad
+path_preview        numbered non-printable coupon centerline diagnostic
+report_only         validation and dimensions only
 ```
+
+The separate first-layer entry point retains `trace_layer` and `path_debug`.
 
 ## Versioned APIs
 
@@ -64,12 +78,15 @@ grid-stack/
 ├── api/grid_stack_v2.scad                 Immutable printed first-layer API
 ├── api/v2/                                API v2 schema, indexes, validation
 ├── paths/parallel_traces.scad              Variable parallel-trace path model
-├── geometry/trace_layer.scad               Square-ended printable trace solid
-├── objects/printed/                        Immutable successful print recipes
+├── geometry/trace_layer.scad               Square-ended primitive trace solid
+├── geometry/structural_strand.scad          Composed structural ribbon
+├── geometry/orthogonal_stack_coupon.scad    Direct-contact X/Y coupon
+├── paths/structural_coupon_paths.scad        Lower/upper ordered paths
+├── objects/printed/                         Immutable successful print recipes
 ├── config/                                 Mutable development catalogs
 ├── lib/                                    Shared math and API v1 implementation
 ├── tests/                                  Path and saved-object contracts
 └── docs/                                    Specification and tutorial lessons
 ```
 
-Read `docs/LESSON_001.md` through `docs/LESSON_007.md` in order.
+Read `docs/LESSON_001.md` through `docs/LESSON_008.md` in order.

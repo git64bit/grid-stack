@@ -3,10 +3,12 @@
 // Project: Grid Stack
 // FileGroup: Development Entry Point
 // FileSummary: Orchestrates Customizer-driven catalog selection, validation,
-//              reporting, coupon-series reporting, and path diagnostics.
+//              reporting, path diagnostics, and the first printable
+//              direct-contact orthogonal structural coupon.
 // Role: Development and exploration entry point. Permanent printed constructs
 //       belong in objects/ as self-contained saved-object recipes.
-// Includes: Current public API, mutable catalogs, and coupon-series reporting.
+// Includes: Current public API, mutable catalogs, structural coupon geometry,
+//           validation, reporting, and coupon-series reporting.
 //////////////////////////////////////////////////////////////////////
 
 include <grid_stack.scad>
@@ -22,6 +24,11 @@ include <config/schedules.scad>
 include <config/coupons.scad>
 include <config/projects.scad>
 
+include <paths/structural_coupon_paths.scad>
+include <geometry/structural_strand.scad>
+include <geometry/orthogonal_stack_coupon.scad>
+include <lib/structural_coupon_validation.scad>
+include <lib/structural_coupon_reporting.scad>
 include <lib/coupon_reporting.scad>
 
 project = named_record(PROJECTS, project_name_selected, "project");
@@ -53,7 +60,46 @@ if (report_coupon_series_enabled) {
     report_coupon_series(selected_coupon_series);
 }
 
-if (render_mode == "path_preview") {
+if (render_mode == "structural_coupon") {
+    assert(project[PR_NAME] == "COUPON_3X3_SPAN6_GAP0_DIRECT",
+        "Structural coupon mode requires the direct-contact Batch 008 project.");
+    assert(pattern_set[PS_NAME] == "SQUARE_COUPON",
+        "Structural coupon mode supports the square coupon pattern only.");
+    assert(len(schedule[SS_GROUPS]) == 2,
+        "Structural coupon mode requires exactly two orientation groups.");
+
+    lower_orientation = schedule[SS_GROUPS][0][SG_ORIENTATION];
+    upper_orientation = schedule[SS_GROUPS][1][SG_ORIENTATION];
+    lower_lead_in = path_policy[PP_LEAD_IN];
+
+    lower_path = structural_coupon_path(
+        boundary, process, nozzle, lower_orientation, lower_lead_in
+    );
+    upper_path = structural_coupon_path(
+        boundary, process, nozzle, upper_orientation, 0
+    );
+
+    validate_direct_contact_stack_coupon(
+        lower_points = lower_path,
+        upper_points = upper_path,
+        boundary = boundary,
+        process = process,
+        nozzle = nozzle,
+        lower_orientation = lower_orientation,
+        upper_orientation = upper_orientation,
+        lower_lead_in = lower_lead_in,
+        clear_vertical_gap = 0
+    );
+
+    report_direct_contact_stack_coupon(
+        lower_path, upper_path, boundary, process, nozzle
+    );
+
+    printable_direct_contact_stack_coupon(
+        lower_path, upper_path, process, nozzle
+    );
+}
+else if (render_mode == "path_preview") {
     assert(boundary_is_count_driven(boundary),
         "Current path preview requires a count-driven coupon project.");
     assert(pattern_set[PS_NAME] == "SQUARE_COUPON",

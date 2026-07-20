@@ -21,6 +21,16 @@ PROJECTS = [
     ),
 
     project_spec(
+        name = "COUPON_3X3_SPAN6_GAP0_DIRECT",
+        process_name = "PLA_PLUS_0P4_LH0P2_W2_H2_R1",
+        boundary_name = count_boundary_name(3, 3, 6),
+        path_policy_name = "ONE_PATH_WITH_LEAD_IN",
+        pattern_set_name = "SQUARE_COUPON",
+        schedule_name = gap_schedule_name(0),
+        notes = "First printable orthogonal structural coupon; direct contact only."
+    ),
+
+    project_spec(
         name = "COUPON_3X3_SPAN5_GAP1",
         process_name = "PLA_PLUS_0P4_LH0P2_W2_H2_R1",
         boundary_name = count_boundary_name(3, 3, 5),

@@ -74,3 +74,12 @@ The perpendicular segment joining two consecutive parallel traces without a lift
 
 ## First-layer object
 A saved recipe for geometry exactly one nozzle trace wide and one deposited layer high. It is useful for first-layer calibration and sacrificial underlays, but is not a composed structural strand.
+
+
+**Direct-contact stack**  
+Two completed structural paths placed with zero clear vertical gap. The upper
+path begins at a crossing supported by the lower path.
+
+**Structural ribbon**  
+The OpenSCAD solid swept along a structural path using the composed strand
+width and height derived from the process profile.
