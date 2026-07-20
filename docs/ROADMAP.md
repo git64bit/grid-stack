@@ -1,26 +1,29 @@
-
 # Development Roadmap
 
 ## Batch 001 — Initial specification
 
 Named records, constraints, schedule, zones, validation, and reporting.
 
-## Batch 002 — Environment correction and documentation
+## Batch 002 — Printing environment
 
-Separate materials, nozzles, and qualified process profiles; derive the minimum structural strand; standardize source headers. No geometry.
+Separate materials, nozzles, and qualified process profiles; derive trace and structural-strand dimensions; standardize source headers.
 
-## Batch 003 — First continuous path
+## Batch 003 — Boundary and coupon model
 
-Rectangular boundary, fixed pitch, square turns, one lead-in, and one ordered point list.
+Add dimension-driven and count-driven boundaries, structural-strand schedules, vertical clear gaps, and the 3 × 3 span/gap coupon matrix. No geometry.
 
-## Batch 004 — Path validation and strand geometry
+## Batch 004 — First continuous coupon path
 
-Continuity checks, bridge-span checks, and conversion from centerline to composed strand geometry.
+Generate one count-driven 3 × 3 rectangular square-grid centerline with one lead-in, square turns, and one uninterrupted ordered path.
 
-## Batch 005 — Layer schedule expansion
+## Batch 005 — Path validation and strand geometry
 
-Generate the `4-5-6-5-4` stack with alternating X and Y orientations.
+Check path continuity and unsupported spans, then convert the centerline to the composed structural-strand solid.
+
+## Batch 006 — Coupon stack generation
+
+Generate lower and upper completed strands with selectable vertical clear gap and expand the first printable coupon case.
 
 ## Later batches
 
-Variable spacing, connector strategies, boundary-aware contours, and square-to-hex pattern zones.
+Full coupon matrix, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.

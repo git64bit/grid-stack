@@ -1,30 +1,37 @@
+# Constraints
 
-# Constraints Register
+## Continuous nozzle path
 
-## Hard structural invariants
+Each deposited layer must be represented by one open, uninterrupted path with no internal travel move, lift, closed subpath, or disconnected island.
 
-| Constraint | Rule |
-|---|---:|
-| Horizontal passes per structural strand | at least 2 |
-| Vertical deposited layers per structural strand | at least 2 |
-| Paths per deposited layer | exactly 1 |
-| Internal travel moves | 0 |
-| Internal nozzle lifts | 0 |
-| Closed independent subpaths | 0 |
+## Structural minimum
 
-## Qualified reference environment
+A trace is not considered reliable by itself. Every structural strand must use at least:
 
-| Property | Value |
-|---|---:|
-| Material | PLA+ |
-| Nozzle diameter | 0.4 mm |
-| Layer height | 0.2 mm |
-| Horizontal passes | 2 |
-| Vertical passes | 2 |
-| Composed strand width | 0.8 mm |
-| Composed strand height | 0.4 mm |
-| Maximum unsupported span | 6.0 mm |
+- two horizontal nozzle passes;
+- two deposited layers in height.
 
-## Removed provisional constraints
+## Bridge qualification
 
-Batch 002 removes `min_clear_gap` and `max_clear_gap`. Clear opening, grout-flow opening, and unsupported span are not interchangeable measurements.
+The active PLA+ process records 6 mm as the current qualified maximum unsupported clear span. Coupon cases beyond 6 mm are permitted only as explicit exploratory tests.
+
+## Boundary authority
+
+A boundary must be either:
+
+- dimension-driven, with outside dimensions as inputs; or
+- count-driven, with clear-opening count and clear span as inputs.
+
+The two modes must not silently override one another.
+
+## Grid count
+
+Grid count means clear openings. `n` openings require `n + 1` structural strands along the same axis.
+
+## Vertical separation
+
+Clear vertical gap is separate from material height. It is measured between the top of one completed structural-strand group and the bottom of the next.
+
+## Schedule units
+
+Schedule counts refer to completed structural strands. Deposited-layer counts are derived from the active process profile.

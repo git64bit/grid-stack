@@ -33,15 +33,20 @@ PX_QUALIFICATION = 7;
 PX_REVISION = 8;
 PX_NOTES = 9;
 
-// Boundary
+// Boundary specification
 B_NAME = 0;
-B_KIND = 1;
-B_SIZE_X = 2;
-B_SIZE_Y = 3;
-B_SIDES = 4;
-B_ROTATION = 5;
-B_EDGE_MARGIN = 6;
-B_NOTES = 7;
+B_MODE = 1;
+B_KIND = 2;
+B_SIZE_X = 3;
+B_SIZE_Y = 4;
+B_CELLS_X = 5;
+B_CELLS_Y = 6;
+B_CLEAR_SPAN_X = 7;
+B_CLEAR_SPAN_Y = 8;
+B_SIDES = 9;
+B_ROTATION = 10;
+B_EDGE_MARGIN = 11;
+B_NOTES = 12;
 
 // Path policy
 PP_NAME = 0;
@@ -60,9 +65,10 @@ Z_NAME = 0;
 Z_PATTERN = 1;
 Z_BAND_KIND = 2;
 Z_BAND_VALUE = 3;
-Z_STRAND_PITCH = 4;
-Z_CONNECTOR = 5;
-Z_NOTES = 6;
+Z_SPACING_SOURCE = 4;
+Z_STRAND_PITCH = 5;
+Z_CONNECTOR = 6;
+Z_NOTES = 7;
 
 // Pattern set
 PS_NAME = 0;
@@ -70,18 +76,18 @@ PS_ZONES = 1;
 PS_TRANSITION = 2;
 PS_NOTES = 3;
 
-// Layer group
-LG_ORIENTATION = 0;
-LG_COUNT = 1;
-LG_PATTERN_SET = 2;
-LG_Z_STEP_MULTIPLIER = 3;
-LG_NOTES = 4;
+// Structural-strand group
+SG_ORIENTATION = 0;
+SG_STRAND_COUNT = 1;
+SG_PATTERN_SET = 2;
+SG_CLEAR_GAP_AFTER = 3;
+SG_NOTES = 4;
 
-// Layer schedule
-LS_NAME = 0;
-LS_GROUPS = 1;
-LS_REQUIRE_SYMMETRY = 2;
-LS_NOTES = 3;
+// Stack schedule
+SS_NAME = 0;
+SS_GROUPS = 1;
+SS_REQUIRE_SYMMETRY = 2;
+SS_NOTES = 3;
 
 // Project specification
 PR_NAME = 0;
@@ -91,3 +97,12 @@ PR_PATH_POLICY = 3;
 PR_PATTERN_SET = 4;
 PR_SCHEDULE = 5;
 PR_NOTES = 6;
+
+// Coupon series
+CS_NAME = 0;
+CS_PROCESS = 1;
+CS_BOUNDARIES = 2;
+CS_SCHEDULES = 3;
+CS_PATH_POLICY = 4;
+CS_PATTERN_SET = 5;
+CS_NOTES = 6;

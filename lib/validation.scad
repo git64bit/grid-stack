@@ -2,10 +2,11 @@
 // LibFile: validation.scad
 // Project: Grid Stack
 // FileGroup: Validation
-// FileSummary: Rejects incomplete or contradictory environments and policies.
+// FileSummary: Rejects incomplete or contradictory environments, boundaries,
+//              path policies, patterns, schedules, and coupon series.
 // Role: Stops invalid specifications before path or solid generation begins.
-// Requires: All active records and utility functions loaded by main.scad.
-// Exports: validate_grid_stack() and subordinate validators.
+// Requires: Active records, catalogs, lookup, and math helpers.
+// Exports: validate_grid_stack() and validate_coupon_series().
 //////////////////////////////////////////////////////////////////////
 
 module validate_material(material) {
@@ -40,11 +41,33 @@ module validate_process(process, material, nozzle) {
         "Process revision must be a positive integer.");
 }
 
-module validate_boundary(boundary) {
-    assert(boundary[B_SIZE_X] > 0 && boundary[B_SIZE_Y] > 0,
-        "Boundary dimensions must be positive.");
+module validate_boundary(boundary, process, nozzle) {
+    assert(boundary[B_MODE] == "dimension" || boundary[B_MODE] == "count",
+        "Boundary mode must be dimension or count.");
     assert(boundary[B_EDGE_MARGIN] >= 0,
         "Boundary edge margin cannot be negative.");
+
+    if (boundary_is_dimension_driven(boundary)) {
+        assert(boundary[B_SIZE_X] > 0 && boundary[B_SIZE_Y] > 0,
+            "Dimension-driven boundary sizes must be positive.");
+        assert(boundary[B_CELLS_X] == 0 && boundary[B_CELLS_Y] == 0,
+            "Dimension-driven boundaries must not contain grid counts.");
+    }
+
+    if (boundary_is_count_driven(boundary)) {
+        assert(boundary[B_KIND] == "rectangle",
+            "Batch 003 count-driven boundaries are rectangular.");
+        assert(is_integer_value(boundary[B_CELLS_X]) &&
+               is_integer_value(boundary[B_CELLS_Y]) &&
+               boundary[B_CELLS_X] >= 1 && boundary[B_CELLS_Y] >= 1,
+            "Count-driven boundaries require positive integer cell counts.");
+        assert(boundary[B_CLEAR_SPAN_X] > 0 &&
+               boundary[B_CLEAR_SPAN_Y] > 0,
+            "Count-driven clear spans must be positive.");
+        assert(boundary_size_x(boundary, process, nozzle) > 0 &&
+               boundary_size_y(boundary, process, nozzle) > 0,
+            "Derived count-driven boundary sizes must be positive.");
+    }
 
     if (boundary[B_KIND] == "regular_polygon")
         assert(boundary[B_SIDES] >= 3 && is_integer_value(boundary[B_SIDES]),
@@ -65,40 +88,53 @@ module validate_path_policy(policy) {
     }
 }
 
-module validate_pattern_set(pattern_set, process, nozzle) {
+module validate_pattern_set(pattern_set, boundary, process, nozzle) {
     zones = pattern_set[PS_ZONES];
     assert(len(zones) >= 1, "A pattern set requires at least one zone.");
 
     for (zone = zones) {
-        clear_gap = zone_clear_gap(zone, process, nozzle);
-        assert(zone[Z_STRAND_PITCH] > strand_width(process, nozzle),
-            str("Zone '", zone[Z_NAME], "' has no open gap."));
-        assert(clear_gap >= 0,
-            str("Zone '", zone[Z_NAME], "' has a negative clear gap."));
+        assert(
+            zone[Z_SPACING_SOURCE] == "fixed_pitch" ||
+            zone[Z_SPACING_SOURCE] == "boundary_clear_span",
+            str("Unknown spacing source in zone '", zone[Z_NAME], "'.")
+        );
+
+        if (zone[Z_SPACING_SOURCE] == "boundary_clear_span")
+            assert(boundary_is_count_driven(boundary),
+                "Boundary-clear-span patterns require a count boundary.");
+
+        assert(zone_clear_span(zone, boundary, process, nozzle, "x") > 0,
+            str("Zone '", zone[Z_NAME], "' has no X clear span."));
+        assert(zone_clear_span(zone, boundary, process, nozzle, "y") > 0,
+            str("Zone '", zone[Z_NAME], "' has no Y clear span."));
         assert(zone[Z_BAND_VALUE] >= 0,
             str("Zone '", zone[Z_NAME], "' has a negative band value."));
     }
 }
 
-module validate_schedule(schedule, pattern_sets) {
-    groups = schedule[LS_GROUPS];
-    assert(len(groups) >= 1, "A layer schedule requires at least one group.");
+module validate_stack_schedule(schedule, pattern_sets) {
+    groups = schedule[SS_GROUPS];
+    assert(len(groups) >= 1, "A stack schedule requires at least one group.");
 
     for (group = groups) {
-        assert(group[LG_COUNT] >= 1 && is_integer_value(group[LG_COUNT]),
-            "Every layer-group count must be a positive integer.");
-        assert(group[LG_Z_STEP_MULTIPLIER] >= 1,
-            "Z-step multiplier cannot be less than one layer height.");
+        assert(group[SG_STRAND_COUNT] >= 1 &&
+               is_integer_value(group[SG_STRAND_COUNT]),
+            "Every strand-group count must be a positive integer.");
+        assert(group[SG_CLEAR_GAP_AFTER] >= 0,
+            "Clear vertical gap cannot be negative.");
         referenced_pattern = named_record(
-            pattern_sets, group[LG_PATTERN_SET], "pattern set"
+            pattern_sets, group[SG_PATTERN_SET], "pattern set"
         );
-        assert(referenced_pattern[PS_NAME] == group[LG_PATTERN_SET],
-            "Layer group pattern-set lookup failed.");
+        assert(referenced_pattern[PS_NAME] == group[SG_PATTERN_SET],
+            "Strand-group pattern-set lookup failed.");
     }
 
-    if (schedule[LS_REQUIRE_SYMMETRY])
+    assert(groups[len(groups) - 1][SG_CLEAR_GAP_AFTER] == 0,
+        "The final strand group cannot leave an unbounded gap after itself.");
+
+    if (schedule[SS_REQUIRE_SYMMETRY])
         assert(groups == reversed(groups),
-            "This schedule is declared symmetric but its groups are not a palindrome.");
+            "This schedule is declared symmetric but is not a palindrome.");
 }
 
 module validate_grid_stack(
@@ -108,14 +144,47 @@ module validate_grid_stack(
     validate_material(material);
     validate_nozzle(nozzle);
     validate_process(process, material, nozzle);
-    validate_boundary(boundary);
+    validate_boundary(boundary, process, nozzle);
     validate_path_policy(path_policy);
-    validate_pattern_set(pattern_set, process, nozzle);
-    validate_schedule(schedule, PATTERN_SETS);
+    validate_pattern_set(pattern_set, boundary, process, nozzle);
+    validate_stack_schedule(schedule, PATTERN_SETS);
 
-    for (group = schedule[LS_GROUPS])
-        assert(group[LG_PATTERN_SET] == project[PR_PATTERN_SET],
-            "Batch 002 permits one pattern set per project.");
+    for (group = schedule[SS_GROUPS])
+        assert(group[SG_PATTERN_SET] == project[PR_PATTERN_SET],
+            "Batch 003 permits one pattern set per project.");
 
     echo("GRID STACK VALIDATION: PASS");
+}
+
+module validate_coupon_series(series) {
+    process = named_record(PROCESS_PROFILES, series[CS_PROCESS], "process profile");
+    material = named_record(MATERIALS, process[PX_MATERIAL], "material");
+    nozzle = named_record(NOZZLES, process[PX_NOZZLE], "nozzle");
+    policy = named_record(PATH_POLICIES, series[CS_PATH_POLICY], "path policy");
+    pattern = named_record(PATTERN_SETS, series[CS_PATTERN_SET], "pattern set");
+
+    validate_process(process, material, nozzle);
+    validate_path_policy(policy);
+    assert(len(series[CS_BOUNDARIES]) >= 1,
+        "A coupon series requires at least one boundary.");
+    assert(len(series[CS_SCHEDULES]) >= 1,
+        "A coupon series requires at least one schedule.");
+
+    for (boundary_name = series[CS_BOUNDARIES]) {
+        boundary = named_record(BOUNDARIES, boundary_name, "boundary");
+        validate_boundary(boundary, process, nozzle);
+        assert(boundary_is_count_driven(boundary),
+            "Coupon series boundaries must be count-driven.");
+        validate_pattern_set(pattern, boundary, process, nozzle);
+    }
+
+    for (schedule_name = series[CS_SCHEDULES]) {
+        schedule = named_record(STACK_SCHEDULES, schedule_name, "stack schedule");
+        validate_stack_schedule(schedule, PATTERN_SETS);
+        for (group = schedule[SS_GROUPS])
+            assert(group[SG_PATTERN_SET] == series[CS_PATTERN_SET],
+                "Coupon schedule pattern does not match the coupon series.");
+    }
+
+    echo("GRID STACK COUPON SERIES VALIDATION: PASS");
 }

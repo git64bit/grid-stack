@@ -4,8 +4,8 @@
 // FileGroup: Data Model
 // FileSummary: Constructor functions for every record-like vector.
 // Role: Centralizes field order while configuration files use named arguments.
-// Exports: material_spec(), nozzle_spec(), process_profile(), and all project
-//          configuration constructors.
+// Exports: Environment, boundary, path, pattern, stack, project, and coupon
+//          record constructors.
 //////////////////////////////////////////////////////////////////////
 
 // Section: Project Environment Records
@@ -38,17 +38,6 @@ function nozzle_spec(name, diameter, construction, status, notes = "") =
 //   A process profile is immutable by convention. When material, nozzle,
 //   layer height, pass count, or tested behavior changes, add a new profile
 //   with a new name and revision instead of silently changing the old one.
-// Arguments:
-//   name = Stable environment name.
-//   material_name = Name from MATERIALS.
-//   nozzle_name = Name from NOZZLES.
-//   layer_height = Height of one deposited trace in millimeters.
-//   width_passes = Adjacent traces composing one structural strand.
-//   height_passes = Deposited layers composing one structural strand height.
-//   bridge_max = Owner-tested maximum unsupported span in millimeters.
-//   qualification = Status of the complete environment.
-//   revision = Integer environment revision.
-//   notes = Test and setup notes.
 function process_profile(
     name,
     material_name,
@@ -73,12 +62,53 @@ function process_profile(
     notes
 ];
 
-// Section: Geometry-Policy Records
+// Section: Boundary Records
 
-function boundary_profile(
-    name, kind, size_x, size_y, sides = 0, rotation = 0,
-    edge_margin = 0, notes = ""
-) = [name, kind, size_x, size_y, sides, rotation, edge_margin, notes];
+// Function: dimension_boundary()
+// Synopsis: Constructs a perimeter-driven boundary with explicit dimensions.
+// Description:
+//   Use this constructor when the finished outside dimensions matter and the
+//   path generator will later determine how many cells fit inside them.
+function dimension_boundary(
+    name,
+    kind,
+    size_x,
+    size_y,
+    sides = 0,
+    rotation = 0,
+    edge_margin = 0,
+    notes = ""
+) = [
+    name, "dimension", kind, size_x, size_y,
+    0, 0, 0, 0,
+    sides, rotation, edge_margin, notes
+];
+
+// Function: count_boundary()
+// Synopsis: Constructs a grid-driven rectangular boundary.
+// Description:
+//   cells_x and cells_y count clear openings, not structural strands.
+//   A count of three openings requires four structural strands.
+//   Outside dimensions are derived from cell count, clear span, strand width,
+//   and optional edge margin.
+function count_boundary(
+    name,
+    cells_x,
+    cells_y,
+    clear_span_x,
+    clear_span_y,
+    kind = "rectangle",
+    sides = 4,
+    rotation = 0,
+    edge_margin = 0,
+    notes = ""
+) = [
+    name, "count", kind, 0, 0,
+    cells_x, cells_y, clear_span_x, clear_span_y,
+    sides, rotation, edge_margin, notes
+];
+
+// Section: Path and Pattern Records
 
 function path_policy(
     name, lead_in, lead_out, require_continuous = true,
@@ -90,21 +120,43 @@ function path_policy(
     allow_closed_subpaths, start_rule, end_rule, notes
 ];
 
+// Function: pattern_zone()
+// Synopsis: Constructs one topological pattern zone and spacing policy.
+// Arguments:
+//   spacing_source = fixed_pitch or boundary_clear_span.
+//   strand_pitch = Used only when spacing_source is fixed_pitch.
 function pattern_zone(
-    name, pattern, band_kind, band_value, strand_pitch,
-    connector, notes = ""
-) = [name, pattern, band_kind, band_value, strand_pitch, connector, notes];
+    name, pattern, band_kind, band_value, spacing_source,
+    strand_pitch, connector, notes = ""
+) = [
+    name, pattern, band_kind, band_value, spacing_source,
+    strand_pitch, connector, notes
+];
 
 function pattern_set(name, zones, transition, notes = "") =
     [name, zones, transition, notes];
 
-function layer_group(
-    orientation, count, pattern_set_name,
-    z_step_multiplier = 1, notes = ""
-) = [orientation, count, pattern_set_name, z_step_multiplier, notes];
+// Section: Stack Schedule Records
 
-function layer_schedule(name, groups, require_symmetry = false, notes = "") =
+// Function: strand_group()
+// Synopsis: Constructs a consecutive group of completed structural strands.
+// Description:
+//   strand_count counts completed structural strands, not raw deposited layers.
+//   clear_gap_after is empty vertical distance after the complete group.
+function strand_group(
+    orientation,
+    strand_count,
+    pattern_set_name,
+    clear_gap_after = 0,
+    notes = ""
+) = [
+    orientation, strand_count, pattern_set_name, clear_gap_after, notes
+];
+
+function stack_schedule(name, groups, require_symmetry = false, notes = "") =
     [name, groups, require_symmetry, notes];
+
+// Section: Project and Test Records
 
 function project_spec(
     name,
@@ -121,5 +173,29 @@ function project_spec(
     path_policy_name,
     pattern_set_name,
     schedule_name,
+    notes
+];
+
+// Function: coupon_series()
+// Synopsis: Constructs a Cartesian test matrix from named boundaries and
+//           named stack schedules.
+// Description:
+//   Boundary records vary horizontal clear span. Stack schedules vary vertical
+//   clear gap. Every boundary/schedule pair is one coupon case.
+function coupon_series(
+    name,
+    process_name,
+    boundary_names,
+    schedule_names,
+    path_policy_name,
+    pattern_set_name,
+    notes = ""
+) = [
+    name,
+    process_name,
+    boundary_names,
+    schedule_names,
+    path_policy_name,
+    pattern_set_name,
     notes
 ];

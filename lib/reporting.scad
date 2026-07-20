@@ -2,9 +2,10 @@
 // LibFile: reporting.scad
 // Project: Grid Stack
 // FileGroup: Reporting
-// FileSummary: Prints the resolved environment and project specification.
+// FileSummary: Prints the resolved environment, boundary mode, pattern, and
+//              structural-strand stack schedule.
 // Role: Makes hidden vector fields inspectable before geometry exists.
-// Requires: Active records and derived process functions.
+// Requires: Active records and derived math functions.
 // Exports: report_grid_stack().
 //////////////////////////////////////////////////////////////////////
 
@@ -23,33 +24,61 @@ module report_grid_stack(
         " wide x ", process[PX_HEIGHT_PASSES], " high"));
     echo(str("Composed structural strand: ", strand_width(process, nozzle),
         " x ", strand_height(process), " mm"));
-    echo(str("Maximum unsupported span: ", process[PX_BRIDGE_MAX], " mm"));
-    echo(str("Boundary: ", boundary[B_NAME], " [", boundary[B_KIND], "]"));
+    echo(str("Maximum qualified unsupported span: ",
+        process[PX_BRIDGE_MAX], " mm"));
+    echo(str("Boundary: ", boundary[B_NAME], " [", boundary[B_MODE],
+        " / ", boundary[B_KIND], "]"));
+    echo(str("Resolved outside size: ",
+        boundary_size_x(boundary, process, nozzle), " x ",
+        boundary_size_y(boundary, process, nozzle), " mm"));
+
+    if (boundary_is_count_driven(boundary)) {
+        echo(str("Clear-opening count: ", boundary[B_CELLS_X], " x ",
+            boundary[B_CELLS_Y]));
+        echo(str("Structural-strand count: ",
+            boundary_strand_count_x(boundary), " x ",
+            boundary_strand_count_y(boundary)));
+        echo(str("Clear span: ", boundary[B_CLEAR_SPAN_X], " x ",
+            boundary[B_CLEAR_SPAN_Y], " mm"));
+        echo(str("Strand pitch: ",
+            boundary_strand_pitch_x(boundary, process, nozzle), " x ",
+            boundary_strand_pitch_y(boundary, process, nozzle), " mm"));
+    }
+
     echo(str("Path policy: ", path_policy[PP_NAME]));
     echo(str("Pattern set: ", pattern_set[PS_NAME]));
-    echo(str("Layer schedule: ", schedule[LS_NAME]));
-    echo(str("Scheduled deposited layers: ", total_scheduled_layers(schedule)));
-    echo(str("Nominal stack height: ", scheduled_height(schedule, process), " mm"));
+    echo(str("Stack schedule: ", schedule[SS_NAME]));
+    echo(str("Scheduled structural strands: ",
+        total_scheduled_strands(schedule)));
+    echo(str("Required deposited layers: ",
+        total_scheduled_layers(schedule, process)));
+    echo(str("Material height: ",
+        scheduled_material_height(schedule, process), " mm"));
+    echo(str("Clear vertical height: ",
+        scheduled_clear_height(schedule), " mm"));
+    echo(str("Total stack height: ",
+        scheduled_height(schedule, process), " mm"));
     echo(str("One continuous nozzle path required: ",
         path_policy[PP_REQUIRE_CONTINUOUS]));
 
     if (level == "full") {
-        echo("Layer groups [orientation, count, pattern, z-step multiplier]:");
-        for (group = schedule[LS_GROUPS])
+        echo("Strand groups [orientation, strand count, pattern, clear gap after]:");
+        for (group = schedule[SS_GROUPS])
             echo([
-                group[LG_ORIENTATION], group[LG_COUNT],
-                group[LG_PATTERN_SET], group[LG_Z_STEP_MULTIPLIER]
+                group[SG_ORIENTATION], group[SG_STRAND_COUNT],
+                group[SG_PATTERN_SET], group[SG_CLEAR_GAP_AFTER]
             ]);
 
-        echo("Pattern zones [name, pattern, band rule, band value, pitch, clear gap, connector]:");
+        echo("Pattern zones [name, pattern, spacing source, X clear span, X pitch, connector]:");
         for (zone = pattern_set[PS_ZONES])
             echo([
-                zone[Z_NAME], zone[Z_PATTERN], zone[Z_BAND_KIND],
-                zone[Z_BAND_VALUE], zone[Z_STRAND_PITCH],
-                zone_clear_gap(zone, process, nozzle), zone[Z_CONNECTOR]
+                zone[Z_NAME], zone[Z_PATTERN], zone[Z_SPACING_SOURCE],
+                zone_clear_span(zone, boundary, process, nozzle, "x"),
+                zone_strand_pitch(zone, boundary, process, nozzle, "x"),
+                zone[Z_CONNECTOR]
             ]);
     }
 
-    echo("Batch 002 intentionally generates no geometry.");
+    echo("Batch 003 intentionally generates no geometry.");
     echo("------------------------------------------------------------");
 }
