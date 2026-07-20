@@ -1,5 +1,10 @@
 # Paths
 
-Future files in this directory will return ordered centerline points and path metadata.
+Path files return ordered centerline point lists. They do not create solids and
+do not select projects.
 
-A path generator must not extrude solids. Its output must remain inspectable as ordered data so continuity can be tested before geometry is created.
+## Current generator
+
+`rectangular_serpentine.scad` generates one open path for a count-driven
+rectangular square-grid coupon. It supports X-running and Y-running layers,
+one lead-in, and square connectors.

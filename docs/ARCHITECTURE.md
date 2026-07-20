@@ -8,7 +8,9 @@
 2. load configuration catalogs;
 3. resolve named records;
 4. validate the selected environment and project;
-5. print the project and coupon-series reports.
+5. print the project and coupon-series reports;
+6. delegate count-driven coupon path generation when selected;
+7. validate and display the diagnostic centerline.
 
 ## Configuration layer
 
@@ -38,13 +40,13 @@ Configuration files do not generate geometry.
 
 Pure math files do not depend on project selections.
 
-## Future generation layers
+## Generation layers
 
-`paths/` will construct ordered continuous centerlines.
+`paths/` constructs ordered continuous centerlines. The first implementation is the rectangular coupon serpentine.
 
-`geometry/` will convert validated paths into printable structural strands.
+`geometry/` displays or converts validated paths. Batch 004 contains only diagnostic path preview geometry; printable structural-strand conversion remains next.
 
-`tests/` will expose coupons and diagnostic views.
+`tests/` will expose printable coupons after stack generation.
 
 ## Dependency direction
 

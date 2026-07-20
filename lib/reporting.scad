@@ -79,6 +79,6 @@ module report_grid_stack(
             ]);
     }
 
-    echo("Batch 003 intentionally generates no geometry.");
+    echo("Batch 004 generates diagnostic path geometry only when selected.");
     echo("------------------------------------------------------------");
 }

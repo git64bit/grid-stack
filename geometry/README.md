@@ -1,5 +1,6 @@
 # Geometry
 
-Future files in this directory will convert validated centerline paths into composed structural-strand solids.
+Geometry files convert path data into visible or printable shapes.
 
-Trace width, trace height, strand width, and strand height must come from the resolved process environment. Boundary and pattern logic do not belong here.
+Batch 004 contains only `path_preview.scad`, a diagnostic representation. It is
+not the composed structural-strand solid.

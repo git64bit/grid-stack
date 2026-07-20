@@ -14,11 +14,11 @@ Add dimension-driven and count-driven boundaries, structural-strand schedules, v
 
 ## Batch 004 — First continuous coupon path
 
-Generate one count-driven 3 × 3 rectangular square-grid centerline with one lead-in, square turns, and one uninterrupted ordered path.
+Generate one count-driven 3 × 3 rectangular square-grid centerline with one lead-in, square turns, one uninterrupted ordered point list, path validation, and a diagnostic preview.
 
-## Batch 005 — Path validation and strand geometry
+## Batch 005 — Structural-strand geometry
 
-Check path continuity and unsupported spans, then convert the centerline to the composed structural-strand solid.
+Convert the validated centerline into the composed structural-strand solid while preserving the path as the authoritative source.
 
 ## Batch 006 — Coupon stack generation
 
@@ -26,4 +26,4 @@ Generate lower and upper completed strands with selectable vertical clear gap an
 
 ## Later batches
 
-Full coupon matrix, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.
+Full coupon matrix, dimension-envelope fitting reports, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.

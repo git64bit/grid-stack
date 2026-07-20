@@ -56,7 +56,7 @@ module validate_boundary(boundary, process, nozzle) {
 
     if (boundary_is_count_driven(boundary)) {
         assert(boundary[B_KIND] == "rectangle",
-            "Batch 003 count-driven boundaries are rectangular.");
+            "Current count-driven boundaries are rectangular.");
         assert(is_integer_value(boundary[B_CELLS_X]) &&
                is_integer_value(boundary[B_CELLS_Y]) &&
                boundary[B_CELLS_X] >= 1 && boundary[B_CELLS_Y] >= 1,
@@ -151,7 +151,7 @@ module validate_grid_stack(
 
     for (group = schedule[SS_GROUPS])
         assert(group[SG_PATTERN_SET] == project[PR_PATTERN_SET],
-            "Batch 003 permits one pattern set per project.");
+            "Current projects permit one pattern set per project.");
 
     echo("GRID STACK VALIDATION: PASS");
 }

@@ -33,3 +33,16 @@
 **Unsupported span** — Distance crossed without existing material directly below the trace.
 
 **Continuous path** — One open path with no internal lift, travel move, seam, or disconnected island.
+
+
+## Ordered nozzle path
+
+One list of centerline points traversed from index zero to the final index. Consecutive points define uninterrupted segments; separate point lists would represent separate paths.
+
+## Lead-in
+
+The first segment of the ordered path, beginning outside the coupon envelope and joining the first structural run without a lift or idle travel.
+
+## Square connector
+
+An axis-aligned path segment joining the end of one parallel run to the beginning of the next. It is part of the same ordered path, not a separate border.
