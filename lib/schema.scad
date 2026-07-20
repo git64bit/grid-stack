@@ -4,8 +4,8 @@
 // FileGroup: Data Model
 // FileSummary: Constructor functions for every record-like vector.
 // Role: Centralizes field order while configuration files use named arguments.
-// Exports: Environment, boundary, path, pattern, stack, project, and coupon
-//          record constructors.
+// Exports: Environment, boundary, path, pattern, stack, project, coupon,
+//          Grid Stack object, and first-layer object constructors.
 //////////////////////////////////////////////////////////////////////
 
 // Section: Project Environment Records
@@ -238,6 +238,42 @@ function grid_stack_object(
     pattern_set_record,
     schedule,
     path_orientation,
+    status,
+    notes
+];
+
+// Function: first_layer_object()
+// Synopsis: Constructs one self-contained single-layer trace recipe.
+// Description:
+//   traces contains records of [axis_min, axis_max, perpendicular_position].
+//   Every length and repeat distance is explicit. Trace width derives from the
+//   embedded nozzle and trace height derives from the embedded process layer.
+function first_layer_object(
+    name,
+    revision,
+    required_api_version,
+    first_layer_schema_version,
+    source_release,
+    material,
+    nozzle,
+    process,
+    traces,
+    orientation = 0,
+    lead_in = 0,
+    status = "draft",
+    notes = ""
+) = [
+    name,
+    revision,
+    required_api_version,
+    first_layer_schema_version,
+    source_release,
+    material,
+    nozzle,
+    process,
+    traces,
+    orientation,
+    lead_in,
     status,
     notes
 ];

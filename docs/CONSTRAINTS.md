@@ -35,3 +35,13 @@ Clear vertical gap is separate from material height. It is measured between the 
 ## Schedule units
 
 Schedule counts refer to completed structural strands. Deposited-layer counts are derived from the active process profile.
+
+## First-layer parallel traces
+
+- Every trace record has exactly three numeric fields.
+- `axis_max` must be greater than `axis_min`.
+- Perpendicular positions must be strictly monotonic.
+- Repeat distance must be at least the nozzle trace width.
+- Consecutive traces must share the alternating endpoint used by their connector.
+- The generated route must be one open, axis-aligned path with no zero-length segment.
+- Printable trace geometry uses square ends and square perpendicular turns.

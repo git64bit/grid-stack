@@ -52,3 +52,14 @@ assert(GRID_STACK_API_VERSION == 1);
 ## Catalog isolation
 
 Configuration catalogs are convenient for exploration, but they may expand or receive new revisions. A saved object therefore embeds exact material, nozzle, process, boundary, path, pattern, and schedule records.
+
+## First-layer recipes
+
+Single-layer trace recipes use `first_layer_object()` and assert both:
+
+```scad
+assert(GRID_STACK_API_VERSION == 1);
+assert(GRID_STACK_FIRST_LAYER_SCHEMA_VERSION == 1);
+```
+
+They embed explicit parallel-trace records in addition to the qualified material, nozzle, and process environment. Their single execution call is `first_layer_render()`.

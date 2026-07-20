@@ -85,3 +85,19 @@ objects/*.scad → versioned public API
 ```
 
 Dependencies must not point upward. A generic library must not select a project or read Customizer variables.
+
+## First-layer execution path
+
+```text
+first-layer-0u2Z-anyXY.scad
+        ↓
+first_layer_object()
+        ↓
+validate_parallel_traces()
+        ↓
+parallel_trace_path()
+        ↓
+printable_trace_layer()
+```
+
+The record layer describes independently sized and positioned parallel traces. The path layer determines traversal and connectors. The geometry layer applies nozzle trace width and deposited-layer height.

@@ -5,7 +5,7 @@
 // FileSummary: Pure helpers for ordered two-dimensional nozzle paths.
 // Role: Measures and inspects point lists without creating geometry or
 //       selecting project records.
-// Requires: None.
+// Requires: nearly_equal() from list_math.scad.
 // Exports: Point, segment, path-length, and continuity helpers.
 //////////////////////////////////////////////////////////////////////
 
@@ -13,11 +13,6 @@
 // Synopsis: Returns the Euclidean distance between two XY points.
 function point_distance_2d(a, b) =
     sqrt(pow(b[0] - a[0], 2) + pow(b[1] - a[1], 2));
-
-// Function: nearly_equal()
-// Synopsis: Compares calculated dimensions with a small numeric tolerance.
-function nearly_equal(a, b, tolerance = 0.000001) =
-    abs(a - b) <= tolerance;
 
 // Function: segment_is_axis_aligned()
 // Synopsis: True when a segment is horizontal or vertical.

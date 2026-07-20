@@ -6,13 +6,14 @@
 //              rendering contract for Grid Stack API version 1.
 // Role: Gives saved-object recipes a stable import target. Incompatible public
 //       changes require a new API file rather than modifying this contract.
-// Exports: GRID_STACK_API_VERSION, GRID_STACK_OBJECT_SCHEMA_VERSION,
-//          GRID_STACK_RELEASE, grid_stack_object(), and grid_stack_render().
+// Exports: API/schema constants, saved-object constructors,
+//          grid_stack_render(), and first_layer_render().
 //////////////////////////////////////////////////////////////////////
 
 GRID_STACK_API_VERSION = 1;
 GRID_STACK_OBJECT_SCHEMA_VERSION = 1;
-GRID_STACK_RELEASE = "0.5.0";
+GRID_STACK_FIRST_LAYER_SCHEMA_VERSION = 1;
+GRID_STACK_RELEASE = "0.6.0";
 
 include <../lib/indices.scad>
 include <../lib/schema.scad>
@@ -25,7 +26,9 @@ include <../lib/stack_math.scad>
 include <../lib/path_math.scad>
 
 include <../paths/rectangular_serpentine.scad>
+include <../paths/parallel_traces.scad>
 include <../geometry/path_preview.scad>
+include <../geometry/trace_layer.scad>
 
 include <../lib/validation.scad>
 include <../lib/path_validation.scad>
@@ -33,6 +36,8 @@ include <../lib/reporting.scad>
 include <../lib/path_reporting.scad>
 include <../lib/object_validation.scad>
 include <../lib/object_reporting.scad>
+include <../lib/first_layer_validation.scad>
+include <../lib/first_layer_reporting.scad>
 
 // Module: grid_stack_render()
 // Synopsis: Validates and reports one self-contained saved object, then
@@ -96,4 +101,50 @@ module grid_stack_render(
     else {
         assert(false, str("Unknown Grid Stack API v1 mode: ", mode));
     }
+}
+
+// Module: first_layer_render()
+// Synopsis: Validates, reports, and renders one saved first-layer trace object.
+// Arguments:
+//   object = Record returned by first_layer_object().
+//   mode = trace_layer, path_debug, or report_only.
+//   report_level = summary or full.
+//   show_path_point_numbers = Diagnostic-only point labels.
+// Description:
+//   trace_layer creates printable geometry exactly one nozzle trace wide and
+//   one deposited layer high. path_debug renders non-printable annotations.
+module first_layer_render(
+    object,
+    mode = "trace_layer",
+    report_level = "full",
+    show_path_point_numbers = true
+) {
+    validate_first_layer_object(object);
+    report_first_layer_object(object, report_level);
+
+    nozzle = object[FLO_NOZZLE];
+    process = object[FLO_PROCESS];
+    points = parallel_trace_path(
+        object[FLO_TRACES],
+        object[FLO_ORIENTATION],
+        object[FLO_LEAD_IN]
+    );
+
+    if (mode == "trace_layer")
+        printable_trace_layer(
+            points = points,
+            trace_width = nozzle[NZ_DIAMETER],
+            trace_height = process[PX_LAYER_H]
+        );
+    else if (mode == "path_debug")
+        diagnostic_path_preview(
+            points = points,
+            boundary_size = [0, 0],
+            show_envelope = false,
+            show_point_numbers = show_path_point_numbers
+        );
+    else if (mode == "report_only")
+        echo("Grid Stack first-layer report-only mode: no geometry generated.");
+    else
+        assert(false, str("Unknown first-layer render mode: ", mode));
 }

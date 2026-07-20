@@ -62,3 +62,15 @@ Integer identifying the field layout and meaning of the `grid_stack_object()` re
 ## Current API alias
 
 `grid_stack.scad`, used for new development. Permanent recipes import an explicit file under `api/` instead.
+
+## Parallel trace
+A straight member of one deposited layer that shares an orientation with the other members in its sequence. Its length and perpendicular position are independently configured.
+
+## Repeat distance
+The centerline-to-centerline distance between consecutive parallel traces. It is the difference between their perpendicular positions.
+
+## Square connector
+The perpendicular segment joining two consecutive parallel traces without a lift or idle move. The connected trace endpoints must share the same coordinate along the trace axis.
+
+## First-layer object
+A saved recipe for geometry exactly one nozzle trace wide and one deposited layer high. It is useful for first-layer calibration and sacrificial underlays, but is not a composed structural strand.

@@ -1,10 +1,8 @@
-# Paths
+# Path Generators
 
-Path files return ordered centerline point lists. They do not create solids and
-do not select projects.
+Path files return ordered XY centerlines. They do not create printable solids.
 
-## Current generator
+- `rectangular_serpentine.scad` derives a regular coupon path from boundary and strand data.
+- `parallel_traces.scad` derives a path from explicit parallel-trace records. Every trace length and repeat distance may differ, while endpoint alignment preserves square perpendicular turns.
 
-`rectangular_serpentine.scad` generates one open path for a count-driven
-rectangular square-grid coupon. It supports X-running and Y-running layers,
-one lead-in, and square connectors.
+Printable geometry consumes these ordered point lists from `geometry/`.

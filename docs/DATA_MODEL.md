@@ -88,3 +88,15 @@ The embedded records make the recipe independent of mutable configuration catalo
 ## Version distinction
 
 The API version defines the public callable contract. The object-schema version defines the saved record layout. The release documents a project milestone. The Git commit or tag identifies the exact implementation.
+
+## Parallel trace records
+
+A configurable first layer stores engineering traces as:
+
+```scad
+[axis_min, axis_max, perpendicular_position]
+```
+
+The first two fields determine one trace length. Differences between consecutive perpendicular positions determine repeat distances. Traversal direction is derived from record parity, and adjacent records must share the endpoint required by the square connector.
+
+A saved first-layer object embeds the trace list, material, nozzle, process, orientation, lead-in, API version, and first-layer schema version.

@@ -4,7 +4,8 @@
 // FileGroup: Data Model
 // FileSummary: Named indexes for record-like vectors constructed in schema.scad.
 // Role: Prevents unexplained numeric indexes from spreading through the code.
-// Exports: Field-index constants for every record type.
+// Exports: Field-index constants for every record type, including parallel
+//          traces and saved first-layer objects.
 //////////////////////////////////////////////////////////////////////
 
 // Material specification
@@ -123,3 +124,23 @@ GSO_SCHEDULE = 11;
 GSO_PATH_ORIENTATION = 12;
 GSO_STATUS = 13;
 GSO_NOTES = 14;
+
+// Parallel-trace record
+PTR_AXIS_MIN = 0;
+PTR_AXIS_MAX = 1;
+PTR_OFFSET = 2;
+
+// Saved first-layer object
+FLO_NAME = 0;
+FLO_REVISION = 1;
+FLO_REQUIRED_API = 2;
+FLO_SCHEMA_VERSION = 3;
+FLO_SOURCE_RELEASE = 4;
+FLO_MATERIAL = 5;
+FLO_NOZZLE = 6;
+FLO_PROCESS = 7;
+FLO_TRACES = 8;
+FLO_ORIENTATION = 9;
+FLO_LEAD_IN = 10;
+FLO_STATUS = 11;
+FLO_NOTES = 12;

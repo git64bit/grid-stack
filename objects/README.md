@@ -1,14 +1,17 @@
 # Saved Objects
 
-Each printed Grid Stack construct is preserved as one self-contained top-level OpenSCAD recipe.
+Every printed Grid Stack object receives a dedicated top-level `.scad` recipe.
 
-A saved recipe:
+A saved recipe must:
 
-1. imports an explicit versioned API file;
-2. asserts the required API version;
-3. embeds every geometry-affecting material, nozzle, process, boundary, path, pattern, and stack record;
-4. calls exactly one public module: `grid_stack_render()`.
+- import an explicit file under `api/`;
+- assert its required API and object schema;
+- embed exact material, nozzle, process, and geometry records;
+- avoid Customizer state and mutable catalog lookup;
+- call exactly one public rendering module;
+- receive a new filename and revision after a printed version changes.
 
-Do not replace explicit records with Customizer selections or mutable catalog lookups. Once a recipe has been printed, preserve it unchanged. A design change creates a new object revision and file.
+Current examples:
 
-The API assertion is a compatibility guard. Exact historical implementation is preserved by the Git commit or tag containing the recipe.
+- `coupon_3x3_span6_gap2_v1.scad` — saved stack/coupon record and diagnostic path.
+- `first-layer-0u2Z-variable-50x18-v1.scad` — printable variable parallel first layer.
