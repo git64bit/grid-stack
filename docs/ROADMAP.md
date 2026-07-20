@@ -18,16 +18,20 @@ Generate one count-driven 3 × 3 rectangular square-grid centerline with one lea
 
 ## Batch 005 — Versioned saved-object API
 
-Separate the development workbench from permanent object recipes. Add API and object-schema versions, self-contained embedded records, validation, reporting, and one public execution module. No new geometry.
+Separate the development workbench from permanent object recipes. Add API and object-schema versions, self-contained embedded records, validation, reporting, and one public execution module.
 
-## Batch 006 — Structural-strand geometry
+## Batch 006 — Variable parallel first layer
 
-Convert the validated centerline into the composed structural-strand solid while preserving the path as the authoritative source.
+Generate one printable primitive trace layer from independently configured parallel trace lengths and repeat distances while preserving square turns and one continuous path.
 
-## Batch 007 — Coupon stack generation
+## Batch 007 — Immutable printed first-layer recipes
 
-Generate lower and upper completed strands with selectable vertical clear gap and expand the first printable coupon case.
+Promote the accepted variable trace object into separate PLA+ and TPU recipes. Add API v2 trace-process and printer records without changing API v1.
+
+## Next
+
+Develop the composed `0.8 × 0.4 mm` structural strand from qualified primitive traces, then create one printable two-orientation stack coupon. Generate the full twelve-case span/gap recipe set only after that geometry is accepted.
 
 ## Later batches
 
-Full coupon matrix, dimension-envelope fitting reports, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.
+Dimension-envelope fitting reports, 4-5-6-5-4 stack expansion, variable spacing, connector strategies, contour-aware boundaries, and square-to-hex transitions.

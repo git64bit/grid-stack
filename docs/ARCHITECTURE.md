@@ -101,3 +101,23 @@ printable_trace_layer()
 ```
 
 The record layer describes independently sized and positioned parallel traces. The path layer determines traversal and connectors. The geometry layer applies nozzle trace width and deposited-layer height.
+
+## API v2 printed first-layer path
+
+API v2 is deliberately separate from the API v1 structural process schema:
+
+```text
+objects/printed/*.scad
+        ↓
+api/grid_stack_v2.scad
+        ↓
+material + nozzle + printer + trace process
+        ↓
+parallel trace records
+        ↓
+continuous path
+        ↓
+printable primitive trace layer
+```
+
+The trace process contains no structural pass count or bridge limit. API v1 files and imports remain available for the older records.
