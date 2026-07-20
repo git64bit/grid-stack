@@ -199,3 +199,45 @@ function coupon_series(
     pattern_set_name,
     notes
 ];
+
+// Section: Saved Object Records
+
+// Function: grid_stack_object()
+// Synopsis: Constructs one self-contained permanent Grid Stack recipe record.
+// Description:
+//   Embedded records are copied into the recipe instead of resolved from
+//   mutable configuration catalogs. The required API and object-schema values
+//   prevent silent execution against an incompatible public interface.
+function grid_stack_object(
+    name,
+    revision,
+    required_api_version,
+    object_schema_version,
+    source_release,
+    material,
+    nozzle,
+    process,
+    boundary,
+    path_policy_record,
+    pattern_set_record,
+    schedule,
+    path_orientation = 0,
+    status = "draft",
+    notes = ""
+) = [
+    name,
+    revision,
+    required_api_version,
+    object_schema_version,
+    source_release,
+    material,
+    nozzle,
+    process,
+    boundary,
+    path_policy_record,
+    pattern_set_record,
+    schedule,
+    path_orientation,
+    status,
+    notes
+];

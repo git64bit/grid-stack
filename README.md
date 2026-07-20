@@ -2,25 +2,30 @@
 
 Grid Stack is an OpenSCAD project for generating reinforced open-grid prints as one continuous nozzle path per deposited layer.
 
-## Batch 004
+## Batch 005
 
-Batch 004 generates the first ordered coupon centerline.
+Batch 005 establishes permanent saved-object recipes before printable strand geometry is added.
 
-- The default project is a 3 × 3 count-driven coupon with 5 mm clear spans.
-- One 30 mm lead-in begins outside the coupon.
-- Four parallel runs and three square connectors form one open path.
-- No perimeter border, nozzle lift, travel segment, or closed subpath is added.
-- The viewport is a diagnostic centerline preview, not a printable strand.
+- `main.scad` remains the Customizer-driven development workbench.
+- `grid_stack.scad` loads the current public API.
+- `api/grid_stack_v1.scad` is the explicit API version used by permanent recipes.
+- `objects/*.scad` stores complete, self-contained object definitions.
+- API and object-schema assertions prevent silent incompatible execution.
+- Exact historical implementation remains available through the Git commit or tag containing the recipe.
 
-Open `main.scad` and press **F5**. A successful run reports:
+Open either:
 
 ```text
-GRID STACK VALIDATION: PASS
-GRID STACK COUPON SERIES VALIDATION: PASS
-GRID STACK GENERATED PATH VALIDATION: PASS
+main.scad
 ```
 
-The green marker is the single path start. The red marker is the single path end. Numbered points show the exact traversal order.
+for catalog-driven development, or:
+
+```text
+objects/coupon_3x3_span6_gap2_v1.scad
+```
+
+for the first permanent recipe example. Both currently render diagnostic centerlines rather than printable solids.
 
 ## Governing process model
 
@@ -39,17 +44,18 @@ The reference process produces a `0.8 × 0.4 mm` structural strand from a `0.4 m
 
 ```text
 grid-stack/
-├── main.scad                         Orchestrates selection and delegation
-├── config/                           Environment and project records
+├── main.scad                         Development orchestrator
+├── grid_stack.scad                   Current public API alias
+├── api/grid_stack_v1.scad            Versioned public interface
+├── objects/                           Permanent self-contained recipes
+├── config/                            Mutable development catalogs
 ├── lib/schema.scad                   Record constructors
 ├── lib/indices.scad                  Named vector-field indexes
-├── lib/path_math.scad                Ordered-path measurements
-├── lib/path_validation.scad          Path assertions
-├── lib/path_reporting.scad           Path console report
-├── paths/rectangular_serpentine.scad First continuous-path generator
+├── lib/object_validation.scad        Saved-object assertions
+├── lib/object_reporting.scad         Saved-object report
+├── paths/rectangular_serpentine.scad Continuous centerline generator
 ├── geometry/path_preview.scad        Non-printable diagnostic display
-├── tests/                             Future printable calibration outputs
 └── docs/                              Specification and tutorial lessons
 ```
 
-Read `docs/LESSON_001.md` through `docs/LESSON_004.md` in order.
+Read `docs/LESSON_001.md` through `docs/LESSON_005.md` in order.

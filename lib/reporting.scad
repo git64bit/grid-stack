@@ -79,6 +79,6 @@ module report_grid_stack(
             ]);
     }
 
-    echo("Batch 004 generates diagnostic path geometry only when selected.");
+    echo("Current API provides reporting and diagnostic path preview only.");
     echo("------------------------------------------------------------");
 }

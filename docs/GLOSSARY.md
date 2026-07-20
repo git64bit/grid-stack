@@ -46,3 +46,19 @@ The first segment of the ordered path, beginning outside the coupon envelope and
 ## Square connector
 
 An axis-aligned path segment joining the end of one parallel run to the beginning of the next. It is part of the same ordered path, not a separate border.
+
+## Saved object recipe
+
+A top-level `.scad` file that embeds every geometry-affecting record and calls one versioned Grid Stack public module. It is the authoritative parametric definition of one printed construct.
+
+## API version
+
+Integer identifying a compatible public Grid Stack constructor and execution contract. A recipe asserts the version it requires.
+
+## Object-schema version
+
+Integer identifying the field layout and meaning of the `grid_stack_object()` record.
+
+## Current API alias
+
+`grid_stack.scad`, used for new development. Permanent recipes import an explicit file under `api/` instead.

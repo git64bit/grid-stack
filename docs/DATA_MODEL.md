@@ -64,3 +64,27 @@ A coupon series references lists of count boundaries and stack schedules. Their 
 ## Project specification
 
 A project references one process profile, boundary, path policy, pattern set, and stack schedule.
+
+## Saved Grid Stack object
+
+`grid_stack_object()` is the top-level permanent recipe record. It embeds:
+
+- object identity and revision;
+- required API version;
+- object-schema version;
+- source release;
+- material record;
+- nozzle record;
+- process record;
+- boundary record;
+- path-policy record;
+- pattern-set record;
+- stack-schedule record;
+- path orientation;
+- lifecycle status and notes.
+
+The embedded records make the recipe independent of mutable configuration catalogs. The object remains a record-like vector, with field positions defined by `GSO_*` indexes in `lib/indices.scad`.
+
+## Version distinction
+
+The API version defines the public callable contract. The object-schema version defines the saved record layout. The release documents a project milestone. The Git commit or tag identifies the exact implementation.

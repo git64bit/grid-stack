@@ -1,20 +1,42 @@
 # Architecture
 
-## Entry point
+## Two top-level uses
 
-`main.scad` performs orchestration only:
+### Development workbench
 
-1. load constructor and math libraries;
-2. load configuration catalogs;
+`main.scad` performs catalog-driven orchestration:
+
+1. load the current public API;
+2. load Customizer selectors and configuration catalogs;
 3. resolve named records;
-4. validate the selected environment and project;
-5. print the project and coupon-series reports;
-6. delegate count-driven coupon path generation when selected;
-7. validate and display the diagnostic centerline.
+4. validate and report the selected environment;
+5. delegate to diagnostic path generation.
+
+It is intended for exploration and development, not permanent object storage.
+
+### Saved-object recipe
+
+A file under `objects/`:
+
+1. imports an explicit versioned API file;
+2. asserts the required API version;
+3. constructs exact embedded records;
+4. builds one `grid_stack_object()` record;
+5. calls one `grid_stack_render()` module.
+
+It does not read Customizer state or mutable configuration catalogs.
+
+## Public API layer
+
+`grid_stack.scad` is the current convenience alias for new development.
+
+`api/grid_stack_v1.scad` is the explicit stable import for API version 1. It loads the public constructors, mathematics, validation, reporting, existing path generator, and diagnostic display.
+
+An incompatible public change requires a new API file. Existing versioned API imports remain available for saved recipes.
 
 ## Configuration layer
 
-`config/` contains declarative records:
+`config/` contains mutable declarative catalogs used by `main.scad`:
 
 - material identities;
 - nozzle hardware;
@@ -34,9 +56,9 @@ Configuration files do not generate geometry.
 
 - record constructors and field indexes;
 - named lookup;
-- process, boundary, pattern, and stack mathematics;
-- validation;
-- reporting.
+- process, boundary, pattern, path, and stack mathematics;
+- development validation and reporting;
+- saved-object validation and reporting.
 
 Pure math files do not depend on project selections.
 
@@ -44,22 +66,22 @@ Pure math files do not depend on project selections.
 
 `paths/` constructs ordered continuous centerlines. The first implementation is the rectangular coupon serpentine.
 
-`geometry/` displays or converts validated paths. Batch 004 contains only diagnostic path preview geometry; printable structural-strand conversion remains next.
+`geometry/` currently displays validated paths. Printable structural-strand conversion remains future work.
 
-`tests/` will expose printable coupons after stack generation.
+`tests/` will expose printable calibration outputs after stack generation.
 
 ## Dependency direction
 
 ```text
-main.scad
-   ↓
-configuration records
-   ↓
-constructors, indexes, lookup, pure math
-   ↓
-future path generation
-   ↓
-future solid generation
+main.scad ───────────────┐
+                         ↓
+objects/*.scad → versioned public API
+                         ↓
+        constructors, indexes, validation, pure math
+                         ↓
+              ordered path generation
+                         ↓
+          diagnostic or future solid output
 ```
 
-Dependencies should not point upward. A generic math library must not select a project or read Customizer variables.
+Dependencies must not point upward. A generic library must not select a project or read Customizer variables.
