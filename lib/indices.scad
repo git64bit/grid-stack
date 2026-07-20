@@ -1,17 +1,37 @@
-/* Array-field indexes. OpenSCAD has no native record type, so every record
-   uses a constructor from schema.scad and named indexes from this file. */
+//////////////////////////////////////////////////////////////////////
+// LibFile: indices.scad
+// Project: Grid Stack
+// FileGroup: Data Model
+// FileSummary: Named indexes for record-like vectors constructed in schema.scad.
+// Role: Prevents unexplained numeric indexes from spreading through the code.
+// Exports: Field-index constants for every record type.
+//////////////////////////////////////////////////////////////////////
 
-// Material profile
-M_NAME = 0;
-M_NOZZLE_D = 1;
-M_LINE_W = 2;
-M_LAYER_H = 3;
-M_BRIDGE_MAX = 4;
-M_BRIDGE_STRAND_W = 5;
-M_BRIDGE_BUILD_LAYERS = 6;
-M_MIN_CLEAR_GAP = 7;
-M_MAX_CLEAR_GAP = 8;
-M_NOTES = 9;
+// Material specification
+MAT_NAME = 0;
+MAT_FAMILY = 1;
+MAT_FLEXIBILITY = 2;
+MAT_STATUS = 3;
+MAT_NOTES = 4;
+
+// Nozzle specification
+NZ_NAME = 0;
+NZ_DIAMETER = 1;
+NZ_CONSTRUCTION = 2;
+NZ_STATUS = 3;
+NZ_NOTES = 4;
+
+// Process profile
+PX_NAME = 0;
+PX_MATERIAL = 1;
+PX_NOZZLE = 2;
+PX_LAYER_H = 3;
+PX_WIDTH_PASSES = 4;
+PX_HEIGHT_PASSES = 5;
+PX_BRIDGE_MAX = 6;
+PX_QUALIFICATION = 7;
+PX_REVISION = 8;
+PX_NOTES = 9;
 
 // Boundary
 B_NAME = 0;
@@ -65,7 +85,7 @@ LS_NOTES = 3;
 
 // Project specification
 PR_NAME = 0;
-PR_MATERIAL = 1;
+PR_PROCESS = 1;
 PR_BOUNDARY = 2;
 PR_PATH_POLICY = 3;
 PR_PATTERN_SET = 4;

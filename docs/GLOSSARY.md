@@ -1,25 +1,26 @@
+
 # Glossary
 
-**Nozzle path** — Ordered centerline followed while extruding.
+**Material specification** — Identity record for a filament family; not a complete printing setup.
 
-**Continuous path** — One open path with no internal lift, travel move, seam, or disconnected island.
+**Nozzle specification** — Hardware record defining the nominal width basis of one pass.
 
-**Strand** — Printed material created by one or more adjacent extrusion lines along a path.
+**Process profile** — Exact qualified combination of material, nozzle, layer height, pass composition, and tested behavior.
 
-**Line width** — Nominal width assigned to one extrusion line.
+**Trace** — Material deposited by one nozzle pass in one layer. It is not accepted as a structural element by itself.
 
-**Bridge strand width** — Intended combined width of the unsupported connection; initially 0.8 mm.
+**Structural strand** — Composed feature using at least two horizontal traces and at least two deposited layers.
+
+**Strand width** — Nozzle diameter multiplied by horizontal pass count.
+
+**Strand height** — Layer height multiplied by vertical pass count.
 
 **Strand pitch** — Centerline distance between neighboring repeated strands.
 
-**Clear gap** — Strand pitch minus nominal line width.
+**Clear gap** — Strand pitch minus composed strand width.
 
-**Unsupported span** — Distance crossed without existing material directly below the strand.
+**Unsupported span** — Distance crossed without existing material directly below the trace.
 
-**Bridge completion layers** — Number of deposited layers required before the bridge is treated as established support.
+**Continuous path** — One open path with no internal lift, travel move, seam, or disconnected island.
 
 **Layer group** — Consecutive deposited layers sharing an orientation and pattern set.
-
-**Pattern zone** — Region within the boundary assigned a pattern grammar and spacing rule.
-
-**Boundary-aware path** — A path generated from intersections with the intended contour, rather than a rectangular pattern clipped afterward.

@@ -1,33 +1,26 @@
+
 # Development Roadmap
 
-## Batch 001 — Specification and data model
+## Batch 001 — Initial specification
 
-Named records, constraints, schedule, zones, validation, and reporting. No geometry.
+Named records, constraints, schedule, zones, validation, and reporting.
 
-## Batch 002 — First continuous path
+## Batch 002 — Environment correction and documentation
 
-Rectangular boundary, fixed pitch, square turns, one lead-in, one ordered point list.
+Separate materials, nozzles, and qualified process profiles; derive the minimum structural strand; standardize source headers. No geometry.
 
-## Batch 003 — Path validation and strand geometry
+## Batch 003 — First continuous path
 
-Continuity checks, segment-length checks, bridge-limit checks, and conversion from centerline to printable strand.
+Rectangular boundary, fixed pitch, square turns, one lead-in, and one ordered point list.
 
-## Batch 004 — Layer schedule expansion
+## Batch 004 — Path validation and strand geometry
+
+Continuity checks, bridge-span checks, and conversion from centerline to composed strand geometry.
+
+## Batch 005 — Layer schedule expansion
 
 Generate the `4-5-6-5-4` stack with alternating X and Y orientations.
 
-## Batch 005 — Variable spacing
+## Later batches
 
-Lists and functions for changing strand pitch while preserving one continuous route.
-
-## Batch 006 — Connector strategies
-
-Square, triangular, rounded, hexagonal, and octagonal end connectors.
-
-## Batch 007 — Boundary-aware contours
-
-Circle and regular polygon intersection logic without disconnected clipping artifacts.
-
-## Batch 008 — Pattern zones
-
-Two outer square rows, hexagonal interior, and a continuous transition path.
+Variable spacing, connector strategies, boundary-aware contours, and square-to-hex pattern zones.

@@ -1,37 +1,57 @@
-# Lesson 001 — Orchestration Before Geometry
 
-The purpose of this batch is to learn how values move through a disciplined OpenSCAD project.
+# Lesson 001 — Records, Tables, and Orchestration
 
-## Follow one value
+OpenSCAD does not provide a native struct type. Grid Stack therefore uses **record-like vectors** stored in lists.
 
-Trace `bridge_max` through these files:
-
-1. `config/materials.scad` assigns `6.0`.
-2. `lib/schema.scad` places it in the material record.
-3. `lib/indices.scad` names its position `M_BRIDGE_MAX`.
-4. `lib/validation.scad` confirms it is positive.
-5. `lib/reporting.scad` prints it to the console.
-6. `main.scad` orchestrates those steps without knowing the numeric index.
-
-That is the core architectural pattern:
-
-```text
-configuration → schema → lookup → validation → use
+```scad
+MATERIALS = [
+    material_spec(
+        name = "PLA_PLUS",
+        family = "PLA+",
+        flexibility = "rigid",
+        status = "in_use"
+    )
+];
 ```
 
-## Why no geometry yet
+This expression contains three levels:
 
-Geometry written before vocabulary and constraints tends to hard-code assumptions. This batch establishes names for the concepts the future path generator must obey.
+1. `MATERIALS` is a named table.
+2. `[ ... ]` is a list of records.
+3. `material_spec(...)` is a constructor function returning one ordered vector.
 
-## Safe exercises
+The constructor call is readable because it uses named arguments. Internally it returns a positional vector. `lib/indices.scad` gives each position a stable name.
 
-Change only one item at a time and press F5:
+## Why this matters
 
-- Set `bridge_max` to `-1` and observe the assertion.
-- Change one outer layer count from `4` to `3` and observe the symmetry assertion.
-- Change a zone pitch to `0.8` and observe the no-open-gap assertion.
-- Restore each value after the test.
+The initialization environment is not incidental. A project upgrade may add a material, nozzle, or tested process without rewriting geometry. Existing names remain stable, and a project references one exact process profile.
 
-## Do not add path code yet
+## Orchestration chain
 
-Batch 002 will introduce the first path object: a rectangular, fixed-spacing, square-turn serpentine with one lead-in and no disconnected geometry.
+Trace the selected process through the files:
+
+```text
+project name
+  → project record
+  → process-profile name
+  → process record
+  → material record + nozzle record
+  → validation
+  → derived dimensions
+  → report
+```
+
+`main.scad` coordinates that chain. It does not own the numbers and does not know the vector indexes.
+
+## Standard source headers
+
+Every `.scad` file now begins with a BOSL2-inspired header containing:
+
+- `LibFile`;
+- `Project`;
+- `FileGroup`;
+- `FileSummary`;
+- `Role`;
+- dependencies and exports where applicable.
+
+Public constructor and process-math functions also include `Function`, `Synopsis`, and argument documentation.

@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////////////////////////
+// LibFile: boundaries.scad
+// Project: Grid Stack
+// FileGroup: Configuration
+// FileSummary: Named outer contours independent of path and pattern logic.
+// Role: Supplies declarative records; it does not generate geometry.
+// Requires: boundary_profile() from lib/schema.scad, loaded first by main.scad.
+// Exports: BOUNDARIES
+//////////////////////////////////////////////////////////////////////
+
 BOUNDARIES = [
     boundary_profile(
         name = "RECT_200X100",

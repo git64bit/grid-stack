@@ -1,37 +1,20 @@
+
 # Project Scope
 
-Grid Stack generates printable open-grid structures from explicit nozzle-path rules.
+Grid Stack generates printable open-grid structures from explicit continuous-nozzle-path rules.
 
 ## Primary invariant
 
-Every deposited layer must be representable as exactly one open, continuous path from lead-in to final endpoint.
+Every deposited layer must be exactly one open continuous path with no internal lift, travel move, disconnected island, or independent closed loop.
 
-The design must not require:
+## Structural primitive
 
-- nozzle lifts inside the path;
-- non-extruding travel moves inside the path;
-- disconnected islands;
-- independently closed loops;
-- slicer-created seams as a normal part of the pattern.
+One trace and one deposited layer are not accepted structural units. The minimum structural unit is a composed strand with at least two horizontal passes and two vertical deposited layers.
 
-## Process constraints
+## Environment rule
 
-The initial PLA+ process model records:
+Material, nozzle diameter, layer height, pass composition, and observed bridge behavior form one qualified process environment. Changing any member requires a new named process profile and requalification.
 
-- 0.4 mm nozzle;
-- 0.4 mm nominal line width;
-- 0.2 mm layer height;
-- 0.8 mm bridge strand width;
-- 6 mm maximum unsupported span;
-- two layers required to establish the full bridge strand.
+## Batch 002 boundary
 
-These are process facts, not decorative dimensions. Later geometry must derive from them or validate against them.
-
-## Out of scope for Batch 001
-
-- path generation;
-- polygon clipping;
-- square-to-hex transitions;
-- STL generation;
-- slicer ordering guarantees;
-- material performance claims.
+Batch 002 defines and validates the environment model. It does not generate paths or geometry.

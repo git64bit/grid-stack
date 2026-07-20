@@ -1,4 +1,11 @@
-/* All configuration tables use the record name at index zero. */
+//////////////////////////////////////////////////////////////////////
+// LibFile: lookup.scad
+// Project: Grid Stack
+// FileGroup: Utilities
+// FileSummary: Resolves one stable record name to exactly one record.
+// Role: Converts project references into concrete environment and policy data.
+// Exports: records_named(), named_record(), record_names().
+//////////////////////////////////////////////////////////////////////
 
 function records_named(records, name) =
     [for (record = records) if (record[0] == name) record];

@@ -1,39 +1,28 @@
+
 # Architecture
 
-The project separates six concerns.
+## Environment layer
 
-## 1. Configuration
+The environment is resolved before any geometry:
 
-`config/` contains named records. These answer: **what should be generated?**
+```text
+materials + nozzles → qualified process profile → derived strand dimensions
+```
 
-Examples:
+Material and nozzle catalogs describe identity. A process profile records the tested combination and revision.
 
-- material and nozzle limits;
-- boundary selection;
-- layer schedule;
-- pattern zones;
-- path policy.
+## Project layer
 
-## 2. Schema
+Projects reference one exact process profile plus boundary, path, pattern, and schedule records.
 
-`lib/schema.scad` contains record constructors. These answer: **what fields must each configuration record contain?**
+## Schema and indexes
 
-OpenSCAD arrays are positional. Constructors and named indexes prevent unexplained numeric indexes from spreading through the project.
+`lib/schema.scad` centralizes vector construction. `lib/indices.scad` names every field position.
 
-## 3. Lookup
+## Lookup, validation, and reporting
 
-`lib/lookup.scad` resolves a human-readable name to exactly one record. Duplicate or missing names stop the model immediately.
+Lookup requires exactly one matching record. Validation rejects incomplete environments. Reporting exposes the resolved values before geometry is attempted.
 
-## 4. Validation
+## Future path and geometry layers
 
-`lib/validation.scad` rejects contradictory or impossible configurations before geometry is attempted.
-
-## 5. Path generation
-
-`paths/` will eventually create ordered centerline points. It must not create printable solids directly.
-
-## 6. Geometry generation
-
-`geometry/` will convert an accepted ordered path into strand geometry with nozzle-width and layer-height dimensions.
-
-This separation permits the same path to be previewed, measured, validated, or extruded without rewriting the pattern logic.
+`paths/` will create ordered centerline data. `geometry/` will convert accepted paths to printable solids using derived strand dimensions. Neither layer should own material or nozzle constants.

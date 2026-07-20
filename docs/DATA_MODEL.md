@@ -1,42 +1,35 @@
+
 # Data Model
 
-## Material profile
+## Material specification
 
-Records nozzle and extrusion dimensions, bridge behavior, and allowed clear-gap range.
+A material record identifies a filament family such as PLA+ or TPU. It contains no nozzle or layer dimensions.
 
-The material profile represents a tested process, not merely a filament brand.
+## Nozzle specification
 
-## Boundary
+A nozzle record identifies installed hardware and its nominal diameter. Changing diameter changes the trace-width basis.
 
-Defines the intended outer contour independently from the pattern. Batch 001 includes rectangle, circle, and regular hexagon records, although only the rectangle is selected.
+## Process profile
 
-## Path policy
+A process profile is the exact qualified environment that joins material and nozzle with layer height, pass composition, bridge observation, qualification, and revision.
 
-Defines continuity requirements, lead-in and lead-out behavior, and whether travel, lift, or closed subpaths are permitted.
+Process profiles are immutable by convention. Add a new named revision when the environment changes.
 
-## Pattern set
+## Derived dimensions
 
-Contains one or more zones. The reference set contains:
+`lib/process_math.scad` derives:
 
-- an outer band two rows deep using a square pattern;
-- a remaining interior using a hexagonal pattern;
-- a required continuous transition between them.
+- trace width;
+- trace height;
+- composed strand width;
+- composed strand height.
 
-## Layer schedule
+These values are not duplicated in configuration.
 
-A schedule is an ordered list of groups. Each group states:
+## Boundary, path policy, pattern set, and schedule
 
-- orientation in degrees;
-- number of deposited layers;
-- pattern-set name;
-- Z-step multiplier.
-
-The reference schedule is a palindrome:
-
-```text
-X × 4 → Y × 5 → X × 6 → Y × 5 → X × 4
-```
+These remain independent from the printing environment. The same path policy or boundary can be tested under multiple exact process profiles.
 
 ## Project specification
 
-A project specification contains only references to named records. It does not duplicate their dimensions.
+A project references one process profile and the named geometry-policy records required for generation.

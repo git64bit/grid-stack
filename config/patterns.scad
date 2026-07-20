@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////////////////////////
+// LibFile: patterns.scad
+// Project: Grid Stack
+// FileGroup: Configuration
+// FileSummary: Named pattern zones and transition requirements.
+// Role: Supplies declarative records; it does not generate geometry.
+// Requires: pattern_zone() and pattern_set() from lib/schema.scad, loaded first by main.scad.
+// Exports: PATTERN_SETS
+//////////////////////////////////////////////////////////////////////
+
 PATTERN_SETS = [
     pattern_set(
         name = "OUTER2_SQUARE_INNER_HEX",

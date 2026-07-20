@@ -19,3 +19,7 @@ Starting commit supplied by the project owner: `74cfe25`
 ## Acceptance boundary
 
 Batch 001 does not claim that the square-to-hex transition is solved. It only represents the requested transition in the data model.
+
+## Supersession note
+
+Batch 002 corrects the original material-profile model by separating material, nozzle hardware, and the qualified process environment. Batch 001 remains a historical acceptance record.

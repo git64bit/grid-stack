@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////////////////////////
+// LibFile: path_policies.scad
+// Project: Grid Stack
+// FileGroup: Configuration
+// FileSummary: Named continuity, lead-in, and endpoint policies.
+// Role: Supplies declarative records; it does not generate geometry.
+// Requires: path_policy() from lib/schema.scad, loaded first by main.scad.
+// Exports: PATH_POLICIES
+//////////////////////////////////////////////////////////////////////
+
 PATH_POLICIES = [
     path_policy(
         name = "ONE_PATH_WITH_LEAD_IN",
