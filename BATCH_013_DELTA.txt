@@ -1,0 +1,36 @@
+Grid Stack Batch 013 — Laboratory Grid Panel and Core Contract
+Base commit: 5aac1af
+
+This archive contains new and changed files only.
+Copy each file into the existing repository while preserving its path.
+
+New files:
+- config/core_contract.scad
+- tests/laboratory_grid_contract.scad
+
+Changed files:
+- BASE_SHA
+- VERSION
+- default.scad
+- main.scad
+- config/boundaries.scad
+- config/defaults.scad
+- config/path_policies.scad
+- config/workbenches.scad
+- registries/laboratory_projects.scad
+- tests/workbench_registry_contract.scad
+- workbenches/catalog.scad
+- workbenches/coupons.scad
+- workbenches/laboratory.scad
+
+No files are deleted.
+
+Primary acceptance entry point:
+- workbenches/laboratory.scad
+
+Expected default laboratory object:
+- project: GRID_PANEL_LAB
+- count boundary: 9 x 9
+- clear span: 6 x 6 mm
+- lead-in: 30 mm
+- render mode: structural_grid

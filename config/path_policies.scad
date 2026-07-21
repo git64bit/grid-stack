@@ -2,13 +2,13 @@
 // LibFile: path_policies.scad
 // Project: Grid Stack
 // FileGroup: Configuration
-// FileSummary: Named continuity, lead-in, and endpoint policies.
+// FileSummary: Shared and laboratory continuity, lead-in, and endpoint policies.
 // Role: Supplies declarative records; it does not generate geometry.
 // Requires: path_policy() from lib/schema.scad, loaded first by main.scad.
-// Exports: PATH_POLICIES
+// Exports: BASE_PATH_POLICIES, ACTIVE_LABORATORY_PATH_POLICIES, PATH_POLICIES
 //////////////////////////////////////////////////////////////////////
 
-PATH_POLICIES = [
+BASE_PATH_POLICIES = [
     path_policy(
         name = "ONE_PATH_WITH_LEAD_IN",
         lead_in = 30,
@@ -22,3 +22,13 @@ PATH_POLICIES = [
         notes = "Exactly one open nozzle path per deposited layer."
     )
 ];
+
+
+ACTIVE_LABORATORY_PATH_POLICIES = is_undef(LABORATORY_PATH_POLICIES)
+    ? []
+    : LABORATORY_PATH_POLICIES;
+
+PATH_POLICIES = concat(
+    BASE_PATH_POLICIES,
+    ACTIVE_LABORATORY_PATH_POLICIES
+);

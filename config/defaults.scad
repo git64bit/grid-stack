@@ -47,3 +47,12 @@ wb_report_deferred_features = is_undef(report_deferred_features_enabled)
 wb_report_level = is_undef(report_level)
     ? "full"
     : report_level;
+
+// Laboratory grid-panel wrapper inputs. These remain inactive outside the
+// laboratory workbench but allow generated wrappers and -D calls to use the
+// same parameter contract.
+wb_lab_cells_x = is_undef(lab_cells_x) ? 9 : lab_cells_x;
+wb_lab_cells_y = is_undef(lab_cells_y) ? 9 : lab_cells_y;
+wb_lab_clear_span_x = is_undef(lab_clear_span_x) ? 6 : lab_clear_span_x;
+wb_lab_clear_span_y = is_undef(lab_clear_span_y) ? 6 : lab_clear_span_y;
+wb_lab_lead_in = is_undef(lab_lead_in) ? 30 : lab_lead_in;

@@ -3,21 +3,42 @@
 // Project: Grid Stack
 // FileGroup: Shared Workbench Orchestrator
 // FileSummary: Routes specialized workbench wrappers to the shared rectangular
-//              coupon engine or to registered catalog/laboratory stubs.
+//              grid engine or to registered catalog/laboratory stubs.
 // Role: Rendering engine included by default.scad, workbenches/*.scad,
 //       generated web wrappers, tests, or direct command-line invocation.
-// Includes: Workbench resolver, project registries, mutable catalogs, coupon
-//           geometry, validation, reporting, and deferred-feature stubs.
+// Includes: Workbench resolver, project registries, mutable catalogs, rectangular
+//           grid geometry, validation, reporting, and deferred-feature stubs.
 //////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////
+// GRID STACK CORE CONTRACT
+// - One continuous open nozzle path per deposited layer.
+// - No intentional lift, idle travel, or disconnected printed subpaths.
+// - Parallel traces with perpendicular square connectors and square ends.
+// - Alternating X/Y structural layers inside a rectangular count_boundary().
+// - Cell count and clear span derive the outside dimensions; no filler border.
+// - Trace size comes from the qualified nozzle and deposited layer height.
+// - Structural strands require at least two width and two height passes.
+// - Clear span, Z gap, trace size, and strand size remain distinct values.
+// - Saved objects are immutable SCAD recipes pinned to a versioned API.
+// - Laboratory objects reach Catalog only after physical acceptance.
+// - Conflicting topology or geometry grammar belongs in another project.
+//////////////////////////////////////////////////////////////////////
 include <grid_stack.scad>
 include <lib/coupon_framework.scad>
+include <config/core_contract.scad>
 
 include <config/defaults.scad>
 include <config/workbenches.scad>
 include <config/materials.scad>
 include <config/nozzles.scad>
 include <config/process_profiles.scad>
+
+// The laboratory registry supplies mutable boundary and path-policy records
+// before the shared catalogs are assembled.
+include <registries/laboratory_projects.scad>
+
 include <config/boundaries.scad>
 include <config/path_policies.scad>
 include <config/patterns.scad>
@@ -27,7 +48,6 @@ include <config/deferred_features.scad>
 
 include <registries/coupon_projects.scad>
 include <registries/catalog_projects.scad>
-include <registries/laboratory_projects.scad>
 include <config/projects.scad>
 
 include <paths/structural_coupon_paths.scad>
@@ -38,7 +58,7 @@ include <lib/structural_coupon_validation.scad>
 include <lib/coupon_reporting.scad>
 include <lib/structural_coupon_reporting.scad>
 
-module run_coupon_project() {
+module run_rectangular_grid_project() {
     project = named_record(PROJECTS, wb_project_name, "project");
     process = named_record(
         PROCESS_PROFILES, project[PR_PROCESS], "process profile"
@@ -61,7 +81,7 @@ module run_coupon_project() {
         path_policy_record, pattern_set_record, schedule
     );
 
-    validate_rectangular_coupon_framework(
+    validate_grid_stack_core_contract(
         project, process, nozzle, boundary,
         path_policy_record, pattern_set_record, schedule
     );
@@ -70,6 +90,8 @@ module run_coupon_project() {
         project, process, material, nozzle, boundary,
         path_policy_record, pattern_set_record, schedule, wb_report_level
     );
+
+    report_grid_stack_core_contract();
 
     if (wb_report_coupon_series) {
         selected_coupon_series = named_record(
@@ -109,7 +131,8 @@ module run_coupon_project() {
             lower_path, upper_path, boundary, process, nozzle
         );
 
-        if (wb_render_mode == "structural_coupon")
+        if (wb_render_mode == "structural_coupon" ||
+            wb_render_mode == "structural_grid")
             printable_direct_contact_stack_coupon(
                 lower_path, upper_path, process, nozzle
             );
@@ -146,7 +169,8 @@ module run_coupon_project() {
             clear_vertical_gap
         );
 
-        if (wb_render_mode == "structural_coupon")
+        if (wb_render_mode == "structural_coupon" ||
+            wb_render_mode == "structural_grid")
             printable_vertical_gap_stack_coupon(
                 witness_path,
                 riser_path,
@@ -157,7 +181,7 @@ module run_coupon_project() {
             );
     }
     else {
-        assert(false, str("Unknown coupon support strategy: ", support_strategy));
+        assert(false, str("Unknown rectangular-grid support strategy: ", support_strategy));
     }
 
     if (wb_render_mode == "path_preview") {
@@ -185,10 +209,11 @@ module run_coupon_project() {
         );
     }
     else if (wb_render_mode == "report_only") {
-        echo("Coupon report-only mode: no geometry generated.");
+        echo("Rectangular-grid report-only mode: no geometry generated.");
     }
-    else if (wb_render_mode != "structural_coupon") {
-        assert(false, str("Unknown coupon render mode: ", wb_render_mode));
+    else if (wb_render_mode != "structural_coupon" &&
+             wb_render_mode != "structural_grid") {
+        assert(false, str("Unknown rectangular-grid render mode: ", wb_render_mode));
     }
 }
 
@@ -209,14 +234,16 @@ validate_workbench_selection(
 
 selected_is_coupon = len(records_named(COUPON_PROJECTS, wb_project_name)) == 1;
 selected_is_catalog = len(records_named(CATALOG_PROJECTS, wb_project_name)) == 1;
-selected_is_laboratory =
-    len(records_named(LABORATORY_PROJECTS, wb_project_name)) == 1;
+selected_is_laboratory_printable =
+    len(records_named(LABORATORY_PRINTABLE_PROJECTS, wb_project_name)) == 1;
+selected_is_laboratory_deferred =
+    len(records_named(LABORATORY_DEFERRED_PROJECTS, wb_project_name)) == 1;
 
-if (selected_is_coupon)
-    run_coupon_project();
+if (selected_is_coupon || selected_is_laboratory_printable)
+    run_rectangular_grid_project();
 else if (selected_is_catalog)
     run_registered_stub("catalog");
-else if (selected_is_laboratory)
+else if (selected_is_laboratory_deferred)
     run_registered_stub("laboratory");
 else
     assert(false, str("Project has no workbench route: ", wb_project_name));

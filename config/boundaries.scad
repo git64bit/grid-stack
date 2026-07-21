@@ -2,13 +2,13 @@
 // LibFile: boundaries.scad
 // Project: Grid Stack
 // FileGroup: Configuration
-// FileSummary: Active count-driven rectangular coupon boundaries plus named
-//              dimension and non-rectangular boundary stubs.
-// Role: Keeps the urgent rectangular coupon catalog operational while
-//       preserving deferred boundary concepts without implementing them.
+// FileSummary: Active count-driven rectangular coupon and laboratory boundaries
+//              plus named dimension and non-rectangular boundary stubs.
+// Role: Assembles all active count boundaries while preserving deferred
+//       boundary concepts without implementing them.
 // Requires: Boundary constructors and count_boundary_name().
-// Exports: COUPON_CLEAR_SPANS, COUPON_BOUNDARIES, DEFERRED_BOUNDARIES,
-//          DIMENSION_BOUNDARIES compatibility alias, and BOUNDARIES.
+// Exports: COUPON_CLEAR_SPANS, COUPON_BOUNDARIES,
+//          ACTIVE_LABORATORY_BOUNDARIES, DEFERRED_BOUNDARIES, and BOUNDARIES.
 //////////////////////////////////////////////////////////////////////
 
 // These values deliberately cross the current 6 mm owner-tested bridge limit.
@@ -74,4 +74,12 @@ DEFERRED_BOUNDARIES = [
 // Compatibility alias retained for earlier lessons and references.
 DIMENSION_BOUNDARIES = DEFERRED_BOUNDARIES;
 
-BOUNDARIES = concat(COUPON_BOUNDARIES, DEFERRED_BOUNDARIES);
+ACTIVE_LABORATORY_BOUNDARIES = is_undef(LABORATORY_BOUNDARIES)
+    ? []
+    : LABORATORY_BOUNDARIES;
+
+BOUNDARIES = concat(
+    COUPON_BOUNDARIES,
+    ACTIVE_LABORATORY_BOUNDARIES,
+    DEFERRED_BOUNDARIES
+);

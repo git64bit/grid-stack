@@ -25,7 +25,8 @@ function workbench_render_mode_allowed(name, mode) =
     name == "development"
         ? (mode == "structural_coupon" ||
            mode == "path_preview" ||
-           mode == "report_only")
+           mode == "report_only" ||
+           mode == "structural_grid")
     : name == "coupons"
         ? (mode == "structural_coupon" ||
            mode == "path_preview" ||
@@ -33,7 +34,9 @@ function workbench_render_mode_allowed(name, mode) =
     : name == "catalog"
         ? mode == "report_only"
     : name == "laboratory"
-        ? mode == "report_only"
+        ? (mode == "structural_grid" ||
+           mode == "path_preview" ||
+           mode == "report_only")
     : false;
 
 module validate_workbench_selection(
