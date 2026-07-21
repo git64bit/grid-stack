@@ -2,15 +2,16 @@
 // LibFile: structural_coupon_contract.scad
 // Project: Grid Stack
 // FileGroup: Contract Test
-// FileSummary: Static OpenSCAD assertions for the Batch 008 direct-contact
-//              orthogonal structural coupon.
-// Role: Verifies derived dimensions, path starts, point counts, and stack
-//       composition without relying on Customizer state.
-// Requires: Current development interface and Batch 008 path modules.
+// FileSummary: Static assertions for the accepted direct-contact rectangular
+//              coupon under framework contract version 1.
+// Role: Verifies derived dimensions, path starts, point counts, stack
+//       composition, and the corrected path-layer schedule terminology.
+// Requires: Current workbench interface and rectangular coupon path modules.
 // Output: Console assertions only.
 //////////////////////////////////////////////////////////////////////
 
 include <../grid_stack.scad>
+include <../lib/coupon_framework.scad>
 include <../paths/structural_coupon_paths.scad>
 
 material = material_spec("PLA_PLUS", "PLA+", "rigid", "in_use");
@@ -23,6 +24,13 @@ process = process_profile(
 boundary = count_boundary(
     "COUNT_3X3_SPAN6", 3, 3, 6, 6,
     "rectangle", 4, 0, 0
+);
+schedule = stack_schedule(
+    coupon_schedule_name(0),
+    [
+        path_layer_group(0, 1, "SQUARE_COUPON", 0),
+        path_layer_group(90, 1, "SQUARE_COUPON", 0)
+    ]
 );
 
 lower = structural_coupon_path(boundary, process, nozzle, 0, 30);
@@ -37,5 +45,8 @@ assert(len(upper) == 8);
 assert(nearly_equal(point_distance_2d(lower[1], upper[0]), 0));
 assert(path_is_axis_aligned(lower));
 assert(path_is_axis_aligned(upper));
+assert(total_scheduled_path_layers(schedule) == 2);
+assert(total_scheduled_layers(schedule, process) == 4);
+assert(coupon_print_geometry_supported(schedule));
 
 echo("GRID STACK STRUCTURAL COUPON CONTRACT: PASS");

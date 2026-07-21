@@ -1,139 +1,86 @@
 # Architecture
 
-## Two top-level uses
+## Development workbench
 
-### Development workbench
+`main.scad` performs mutable catalog orchestration:
 
-`main.scad` performs catalog-driven orchestration:
-
-1. load the current public API;
-2. load Customizer selectors and configuration catalogs;
+1. load constructors, indexes, and mathematics;
+2. load Customizer selectors and catalogs;
 3. resolve named records;
-4. validate and report the selected environment;
-5. delegate to diagnostic path generation.
+4. validate the general data model;
+5. validate the frozen rectangular coupon contract;
+6. generate lower and upper continuous paths;
+7. render direct contact, preview paths, or stop at an explicit stub.
 
-It is intended for exploration and development, not permanent object storage.
+The workbench is for development and qualification. Permanent printed objects belong under `objects/`.
 
-### Saved-object recipe
+## Frozen rectangular coupon route
 
-A file under `objects/`:
+```text
+material + nozzle + qualified process
+        ↓
+count_boundary rectangle
+        ↓
+SQUARE_COUPON topology
+        ↓
+one continuous lower X path
+        ↓
+one continuous upper Y path
+        ↓
+complete structural path-layer schedule
+        ↓
+direct-contact solid or positive-gap stub
+```
 
-1. imports an explicit versioned API file;
-2. asserts the required API version;
-3. constructs exact embedded records;
-4. builds one `grid_stack_object()` record;
-5. calls one `grid_stack_render()` module.
+`lib/coupon_framework.scad` is the central contract. It prevents deferred boundary and pattern records from entering the active route.
 
-It does not read Customizer state or mutable configuration catalogs.
+## Terminology layers
 
-## Public API layer
+```text
+primitive trace
+    nozzle diameter × one deposited layer
 
-`grid_stack.scad` is the current convenience alias for new development.
+structural strand section
+    trace width × horizontal passes
+    trace height × vertical passes
 
-`api/grid_stack_v1.scad` is the explicit stable import for API version 1. It loads the public constructors, mathematics, validation, reporting, existing path generator, and diagnostic display.
+structural path layer
+    one complete continuous serpentine swept with the strand section
 
-An incompatible public change requires a new API file. Existing versioned API imports remain available for saved recipes.
+schedule group
+    repetitions of a complete structural path layer
+```
+
+The `PLG_*` indexes and `path_layer_group()` constructor express the frozen terminology. `SG_*` and `strand_group()` remain compatibility aliases.
 
 ## Configuration layer
 
-`config/` contains mutable declarative catalogs used by `main.scad`:
+`config/` contains mutable records:
 
-- material identities;
-- nozzle hardware;
-- qualified process environments;
-- dimension and count boundaries;
-- path policies;
-- pattern topology and spacing source;
-- structural-strand stack schedules;
-- coupon matrices;
-- project references.
+- materials, nozzles, and qualified processes;
+- active count boundaries and deferred boundary stubs;
+- square coupon topology and mixed-pattern stub;
+- complete path-layer schedules;
+- twelve-case coupon matrix;
+- named projects;
+- deferred feature registry.
 
-Configuration files do not generate geometry.
+Configuration files do not create solids.
 
-## Library layer
+## Path and geometry layers
 
-`lib/` contains:
+`paths/` returns ordered point lists only.
 
-- record constructors and field indexes;
-- named lookup;
-- process, boundary, pattern, path, and stack mathematics;
-- development validation and reporting;
-- saved-object validation and reporting.
+`geometry/` converts validated paths into solids and does not select projects.
 
-Pure math files do not depend on project selections.
+The current structural solid implementation supports zero vertical gap. Positive gaps require a support/anchor strategy and are blocked by the framework stub.
 
-## Generation layers
+## Saved objects and API isolation
 
-`paths/` constructs ordered continuous centerlines. The first implementation is the rectangular coupon serpentine.
+A permanent recipe must import an explicit versioned API, embed exact records, assert the API version, and call one public render module.
 
-`geometry/` currently displays validated paths. Printable structural-strand conversion remains future work.
+The audit found that API versions 1 and 2 still import some shared implementation files. The next coupon API must keep all behavior-affecting dependencies inside its own versioned directory before the coupon recipes are frozen.
 
-`tests/` will expose printable calibration outputs after stack generation.
+## Deferred route
 
-## Dependency direction
-
-```text
-main.scad ───────────────┐
-                         ↓
-objects/*.scad → versioned public API
-                         ↓
-        constructors, indexes, validation, pure math
-                         ↓
-              ordered path generation
-                         ↓
-          diagnostic or future solid output
-```
-
-Dependencies must not point upward. A generic library must not select a project or read Customizer variables.
-
-## First-layer execution path
-
-```text
-first-layer-0u2Z-anyXY.scad
-        ↓
-first_layer_object()
-        ↓
-validate_parallel_traces()
-        ↓
-parallel_trace_path()
-        ↓
-printable_trace_layer()
-```
-
-The record layer describes independently sized and positioned parallel traces. The path layer determines traversal and connectors. The geometry layer applies nozzle trace width and deposited-layer height.
-
-## API v2 printed first-layer path
-
-API v2 is deliberately separate from the API v1 structural process schema:
-
-```text
-objects/printed/*.scad
-        ↓
-api/grid_stack_v2.scad
-        ↓
-material + nozzle + printer + trace process
-        ↓
-parallel trace records
-        ↓
-continuous path
-        ↓
-printable primitive trace layer
-```
-
-The trace process contains no structural pass count or bridge limit. API v1 files and imports remain available for the older records.
-
-
-## Structural coupon pipeline
-
-```text
-process profile + nozzle
-        ↓ derived strand width/height
-count boundary
-        ↓ ordered lower and upper paths
-structural ribbon geometry
-        ↓ direct-contact Z placement
-printable orthogonal coupon
-```
-
-The path files never create solids. Geometry files never choose catalog
-records. `main.scad` resolves records and orchestrates the pipeline.
+Dimension boundaries, circles, polygons, mixed square/hex patterns, and expanded stacks remain named records. They fail framework validation intentionally and do not receive partial implementations during rectangular coupon work.

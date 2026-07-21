@@ -48,10 +48,10 @@ Pattern topology remains independent from dimensions. Each zone declares whether
 
 ## Stack schedules
 
-A stack schedule contains ordered `strand_group()` records. Each group stores:
+A stack schedule contains ordered `path_layer_group()` records. Each group stores:
 
 - orientation;
-- completed structural-strand count;
+- complete continuous structural path-layer count;
 - pattern-set reference;
 - clear vertical gap after the group.
 
@@ -100,3 +100,6 @@ A configurable first layer stores engineering traces as:
 The first two fields determine one trace length. Differences between consecutive perpendicular positions determine repeat distances. Traversal direction is derived from record parity, and adjacent records must share the endpoint required by the square connector.
 
 A saved first-layer object embeds the trace list, material, nozzle, process, orientation, lead-in, API version, and first-layer schema version.
+
+
+`strand_group()` remains a compatibility wrapper for API v1 and early lessons. Its stored count has the same path-layer meaning.

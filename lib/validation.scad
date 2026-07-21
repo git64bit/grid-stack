@@ -3,7 +3,7 @@
 // Project: Grid Stack
 // FileGroup: Validation
 // FileSummary: Rejects incomplete or contradictory environments, boundaries,
-//              path policies, patterns, schedules, and coupon series.
+//              path policies, patterns, path-layer schedules, and coupon series.
 // Role: Stops invalid specifications before path or solid generation begins.
 // Requires: Active records, catalogs, lookup, and math helpers.
 // Exports: validate_grid_stack() and validate_coupon_series().
@@ -117,19 +117,19 @@ module validate_stack_schedule(schedule, pattern_sets) {
     assert(len(groups) >= 1, "A stack schedule requires at least one group.");
 
     for (group = groups) {
-        assert(group[SG_STRAND_COUNT] >= 1 &&
-               is_integer_value(group[SG_STRAND_COUNT]),
-            "Every strand-group count must be a positive integer.");
-        assert(group[SG_CLEAR_GAP_AFTER] >= 0,
+        assert(group[PLG_LAYER_COUNT] >= 1 &&
+               is_integer_value(group[PLG_LAYER_COUNT]),
+            "Every path-layer group count must be a positive integer.");
+        assert(group[PLG_CLEAR_GAP_AFTER] >= 0,
             "Clear vertical gap cannot be negative.");
         referenced_pattern = named_record(
-            pattern_sets, group[SG_PATTERN_SET], "pattern set"
+            pattern_sets, group[PLG_PATTERN_SET], "pattern set"
         );
-        assert(referenced_pattern[PS_NAME] == group[SG_PATTERN_SET],
-            "Strand-group pattern-set lookup failed.");
+        assert(referenced_pattern[PS_NAME] == group[PLG_PATTERN_SET],
+            "Path-layer-group pattern-set lookup failed.");
     }
 
-    assert(groups[len(groups) - 1][SG_CLEAR_GAP_AFTER] == 0,
+    assert(groups[len(groups) - 1][PLG_CLEAR_GAP_AFTER] == 0,
         "The final strand group cannot leave an unbounded gap after itself.");
 
     if (schedule[SS_REQUIRE_SYMMETRY])
@@ -150,7 +150,7 @@ module validate_grid_stack(
     validate_stack_schedule(schedule, PATTERN_SETS);
 
     for (group = schedule[SS_GROUPS])
-        assert(group[SG_PATTERN_SET] == project[PR_PATTERN_SET],
+        assert(group[PLG_PATTERN_SET] == project[PR_PATTERN_SET],
             "Current projects permit one pattern set per project.");
 
     echo("GRID STACK VALIDATION: PASS");
@@ -182,7 +182,7 @@ module validate_coupon_series(series) {
         schedule = named_record(STACK_SCHEDULES, schedule_name, "stack schedule");
         validate_stack_schedule(schedule, PATTERN_SETS);
         for (group = schedule[SS_GROUPS])
-            assert(group[SG_PATTERN_SET] == series[CS_PATTERN_SET],
+            assert(group[PLG_PATTERN_SET] == series[CS_PATTERN_SET],
                 "Coupon schedule pattern does not match the coupon series.");
     }
 

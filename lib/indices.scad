@@ -4,8 +4,8 @@
 // FileGroup: Data Model
 // FileSummary: Named indexes for record-like vectors constructed in schema.scad.
 // Role: Prevents unexplained numeric indexes from spreading through the code.
-// Exports: Field-index constants for every record type, including parallel
-//          traces and saved first-layer objects.
+// Exports: Field-index constants for every record type, including frozen path-
+//          layer terminology, compatibility aliases, and saved objects.
 //////////////////////////////////////////////////////////////////////
 
 // Material specification
@@ -77,12 +77,22 @@ PS_ZONES = 1;
 PS_TRANSITION = 2;
 PS_NOTES = 3;
 
-// Structural-strand group
-SG_ORIENTATION = 0;
-SG_STRAND_COUNT = 1;
-SG_PATTERN_SET = 2;
-SG_CLEAR_GAP_AFTER = 3;
-SG_NOTES = 4;
+// Structural path-layer group
+//
+// PLG_* is the frozen terminology. One group count represents repetitions of
+// one complete continuous serpentine grid layer. SG_* remains as a compatibility
+// alias for API v1 and the early lessons, where the field was named strand_count.
+PLG_ORIENTATION = 0;
+PLG_LAYER_COUNT = 1;
+PLG_PATTERN_SET = 2;
+PLG_CLEAR_GAP_AFTER = 3;
+PLG_NOTES = 4;
+
+SG_ORIENTATION = PLG_ORIENTATION;
+SG_STRAND_COUNT = PLG_LAYER_COUNT;
+SG_PATTERN_SET = PLG_PATTERN_SET;
+SG_CLEAR_GAP_AFTER = PLG_CLEAR_GAP_AFTER;
+SG_NOTES = PLG_NOTES;
 
 // Stack schedule
 SS_NAME = 0;

@@ -1,3 +1,5 @@
+> **Batch 009 correction:** schedule counts are now defined as complete structural path layers, not individual parallel strands. This file preserves the original Batch 003 history.
+
 # Batch 003 — Boundary Modes and Coupon Matrices
 
 ## Source of truth

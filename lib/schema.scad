@@ -4,8 +4,8 @@
 // FileGroup: Data Model
 // FileSummary: Constructor functions for every record-like vector.
 // Role: Centralizes field order while configuration files use named arguments.
-// Exports: Environment, boundary, path, pattern, stack, project, coupon,
-//          Grid Stack object, and first-layer object constructors.
+// Exports: Environment, boundary, path, pattern, path-layer stack, project,
+//          coupon, Grid Stack object, and first-layer object constructors.
 //////////////////////////////////////////////////////////////////////
 
 // Section: Project Environment Records
@@ -138,20 +138,38 @@ function pattern_set(name, zones, transition, notes = "") =
 
 // Section: Stack Schedule Records
 
-// Function: strand_group()
-// Synopsis: Constructs a consecutive group of completed structural strands.
+// Function: path_layer_group()
+// Synopsis: Constructs repetitions of one complete continuous grid path layer.
 // Description:
-//   strand_count counts completed structural strands, not raw deposited layers.
-//   clear_gap_after is empty vertical distance after the complete group.
+//   layer_count counts complete serpentine grid layers. Each layer uses the
+//   composed structural-strand cross-section and may require multiple raw
+//   deposited slicer layers. clear_gap_after is empty vertical distance after
+//   the complete group.
+function path_layer_group(
+    orientation,
+    layer_count,
+    pattern_set_name,
+    clear_gap_after = 0,
+    notes = ""
+) = [
+    orientation, layer_count, pattern_set_name, clear_gap_after, notes
+];
+
+// Function: strand_group()
+// Synopsis: Compatibility constructor retained for API v1 and early lessons.
+// Description:
+//   The original name implied one individual parallel strand. The stored record
+//   actually counts complete continuous grid path layers. New code must use
+//   path_layer_group() while this wrapper preserves the existing vector shape.
 function strand_group(
     orientation,
     strand_count,
     pattern_set_name,
     clear_gap_after = 0,
     notes = ""
-) = [
+) = path_layer_group(
     orientation, strand_count, pattern_set_name, clear_gap_after, notes
-];
+);
 
 function stack_schedule(name, groups, require_symmetry = false, notes = "") =
     [name, groups, require_symmetry, notes];

@@ -25,7 +25,7 @@ Derived dimensions must not be copied back into configuration as competing input
 
 ## Schedule rule
 
-Schedules count completed structural strands. Raw deposited layers and resulting stack height are derived from the selected process profile.
+Schedules count complete continuous structural path layers. Each path layer covers the selected boundary using the composed structural-strand section. Raw deposited layers and resulting stack height are derived from the selected process profile.
 
 ## Batch 003 boundary
 

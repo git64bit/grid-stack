@@ -2,92 +2,78 @@
 // LibFile: schedules.scad
 // Project: Grid Stack
 // FileGroup: Configuration
-// FileSummary: Named ordered groups of completed structural strands,
-//              orientations, and clear vertical gaps.
-// Role: Counts reliable composed strands rather than raw deposited layers.
-// Requires: strand_group(), stack_schedule(), and gap_schedule_name().
-// Exports: COUPON_VERTICAL_GAPS, PRIMARY_STACK_SCHEDULES,
-//          DIRECT_CONTACT_STACK_SCHEDULES, COUPON_STACK_SCHEDULES,
-//          STACK_SCHEDULES
+// FileSummary: Frozen two-layer rectangular coupon schedules plus the deferred
+//              multi-layer 4-5-6-5-4 schedule.
+// Role: Counts complete continuous structural path layers, not individual
+//       parallel strands and not raw slicer layers.
+// Requires: path_layer_group(), stack_schedule(), coupon_schedule_name().
+// Exports: COUPON_REFERENCE_VERTICAL_GAPS, COUPON_VERTICAL_GAPS,
+//          COUPON_ALL_VERTICAL_GAPS, COUPON_STACK_SCHEDULES,
+//          DEFERRED_STACK_SCHEDULES, compatibility aliases, STACK_SCHEDULES.
 //////////////////////////////////////////////////////////////////////
 
-PRIMARY_STACK_SCHEDULES = [
-    stack_schedule(
-        name = "X4_Y5_X6_Y5_X4",
-        groups = [
-            strand_group(0, 4, "OUTER2_SQUARE_INNER_HEX", 0,
-                "Four completed X-oriented structural strands"),
-            strand_group(90, 5, "OUTER2_SQUARE_INNER_HEX", 0,
-                "Five completed Y-oriented structural strands"),
-            strand_group(0, 6, "OUTER2_SQUARE_INNER_HEX", 0,
-                "Six completed X-oriented center structural strands"),
-            strand_group(90, 5, "OUTER2_SQUARE_INNER_HEX", 0,
-                "Five completed Y-oriented structural strands"),
-            strand_group(0, 4, "OUTER2_SQUARE_INNER_HEX", 0,
-                "Four completed X-oriented structural strands")
-        ],
-        require_symmetry = true,
-        notes = "Symmetric 4-5-6-5-4 schedule measured in completed strands."
-    )
-];
-
-
-DIRECT_CONTACT_STACK_SCHEDULES = [
-    stack_schedule(
-        name = gap_schedule_name(0),
-        groups = [
-            strand_group(
-                orientation = 0,
-                strand_count = 1,
-                pattern_set_name = "SQUARE_COUPON",
-                clear_gap_after = 0,
-                notes = "One completed lower X structural path"
-            ),
-            strand_group(
-                orientation = 90,
-                strand_count = 1,
-                pattern_set_name = "SQUARE_COUPON",
-                clear_gap_after = 0,
-                notes = "One completed upper Y structural path in direct contact"
-            )
-        ],
-        require_symmetry = false,
-        notes = "Batch 008 direct-contact qualification schedule."
-    )
-];
-
+COUPON_REFERENCE_VERTICAL_GAPS = [0];
 COUPON_VERTICAL_GAPS = [1, 2, 3];
+COUPON_ALL_VERTICAL_GAPS = concat(
+    COUPON_REFERENCE_VERTICAL_GAPS,
+    COUPON_VERTICAL_GAPS
+);
 
 COUPON_STACK_SCHEDULES = [
-    for (clear_gap = COUPON_VERTICAL_GAPS)
+    for (clear_gap = COUPON_ALL_VERTICAL_GAPS)
         stack_schedule(
-            name = gap_schedule_name(clear_gap),
+            name = coupon_schedule_name(clear_gap),
             groups = [
-                strand_group(
+                path_layer_group(
                     orientation = 0,
-                    strand_count = 1,
+                    layer_count = 1,
                     pattern_set_name = "SQUARE_COUPON",
                     clear_gap_after = clear_gap,
-                    notes = "One completed lower X structural strand"
+                    notes = "One complete lower X-running structural grid layer."
                 ),
-                strand_group(
+                path_layer_group(
                     orientation = 90,
-                    strand_count = 1,
+                    layer_count = 1,
                     pattern_set_name = "SQUARE_COUPON",
                     clear_gap_after = 0,
-                    notes = "One completed upper Y structural strand"
+                    notes = "One complete upper Y-running structural grid layer."
                 )
             ],
             require_symmetry = false,
-            notes = str(
-                "Bridge coupon with ", clear_gap,
-                " mm clear vertical separation."
-            )
+            notes = clear_gap == 0
+                ? "Accepted direct-contact reference schedule."
+                : str(
+                    "Frozen ", clear_gap,
+                    " mm vertical-gap specification; support geometry is stubbed."
+                )
         )
 ];
 
+DEFERRED_STACK_SCHEDULES = [
+    stack_schedule(
+        name = "XGRID4_YGRID5_XGRID6_YGRID5_XGRID4",
+        groups = [
+            path_layer_group(0, 4, "OUTER2_SQUARE_INNER_HEX", 0,
+                "Four complete X-running grid layers"),
+            path_layer_group(90, 5, "OUTER2_SQUARE_INNER_HEX", 0,
+                "Five complete Y-running grid layers"),
+            path_layer_group(0, 6, "OUTER2_SQUARE_INNER_HEX", 0,
+                "Six complete X-running center grid layers"),
+            path_layer_group(90, 5, "OUTER2_SQUARE_INNER_HEX", 0,
+                "Five complete Y-running grid layers"),
+            path_layer_group(0, 4, "OUTER2_SQUARE_INNER_HEX", 0,
+                "Four complete X-running grid layers")
+        ],
+        require_symmetry = true,
+        notes = "STUB: multi-layer mixed-pattern schedule is deferred."
+    )
+];
+
+// Compatibility aliases retained for earlier lesson text.
+DIRECT_CONTACT_STACK_SCHEDULES = [COUPON_STACK_SCHEDULES[0]];
+PRIMARY_STACK_SCHEDULES = DEFERRED_STACK_SCHEDULES;
+
 STACK_SCHEDULES = concat(
-    PRIMARY_STACK_SCHEDULES,
-    DIRECT_CONTACT_STACK_SCHEDULES,
-    COUPON_STACK_SCHEDULES
+    COUPON_STACK_SCHEDULES,
+    DEFERRED_STACK_SCHEDULES
 );

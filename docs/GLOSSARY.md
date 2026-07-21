@@ -26,7 +26,7 @@
 
 **Clear vertical gap** — Empty Z distance between completed structural-strand groups.
 
-**Stack schedule** — Ordered sequence of completed structural-strand groups and clear vertical gaps.
+**Stack schedule** — Ordered sequence of complete structural path-layer groups and clear vertical gaps.
 
 **Coupon series** — Cartesian product of named coupon boundaries and named stack schedules.
 
@@ -83,3 +83,19 @@ path begins at a crossing supported by the lower path.
 **Structural ribbon**  
 The OpenSCAD solid swept along a structural path using the composed strand
 width and height derived from the process profile.
+
+## Complete structural path layer
+
+One complete continuous serpentine path across a boundary, swept with the composed structural-strand cross-section. This is the unit counted by current stack schedules.
+
+## Path-layer group
+
+A consecutive number of complete structural path layers sharing one orientation and pattern. Constructed with `path_layer_group()`.
+
+## Exploratory span
+
+A clear span intentionally beyond the current owner-tested bridge limit. It is a valid calibration case, not an invalid specification.
+
+## Framework stub
+
+A named extension point that is retained and rejected explicitly until its geometry and validation rules are implemented.

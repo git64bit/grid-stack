@@ -3,7 +3,7 @@
 // Project: Grid Stack
 // FileGroup: Reporting
 // FileSummary: Prints the resolved environment, boundary mode, pattern, and
-//              structural-strand stack schedule.
+//              complete structural path-layer stack schedule.
 // Role: Makes hidden vector fields inspectable before geometry exists.
 // Requires: Active records and derived math functions.
 // Exports: report_grid_stack().
@@ -48,8 +48,8 @@ module report_grid_stack(
     echo(str("Path policy: ", path_policy[PP_NAME]));
     echo(str("Pattern set: ", pattern_set[PS_NAME]));
     echo(str("Stack schedule: ", schedule[SS_NAME]));
-    echo(str("Scheduled structural strands: ",
-        total_scheduled_strands(schedule)));
+    echo(str("Scheduled complete structural path layers: ",
+        total_scheduled_path_layers(schedule)));
     echo(str("Required deposited layers: ",
         total_scheduled_layers(schedule, process)));
     echo(str("Material height: ",
@@ -62,11 +62,11 @@ module report_grid_stack(
         path_policy[PP_REQUIRE_CONTINUOUS]));
 
     if (level == "full") {
-        echo("Strand groups [orientation, strand count, pattern, clear gap after]:");
+        echo("Path-layer groups [orientation, layer count, pattern, clear gap after]:");
         for (group = schedule[SS_GROUPS])
             echo([
-                group[SG_ORIENTATION], group[SG_STRAND_COUNT],
-                group[SG_PATTERN_SET], group[SG_CLEAR_GAP_AFTER]
+                group[PLG_ORIENTATION], group[PLG_LAYER_COUNT],
+                group[PLG_PATTERN_SET], group[PLG_CLEAR_GAP_AFTER]
             ]);
 
         echo("Pattern zones [name, pattern, spacing source, X clear span, X pitch, connector]:");
@@ -79,6 +79,6 @@ module report_grid_stack(
             ]);
     }
 
-    echo("Current API provides reporting and diagnostic path preview only.");
+    echo("Render capability is selected by the calling entry point.");
     echo("------------------------------------------------------------");
 }

@@ -81,37 +81,37 @@ The bridge qualification applies to clear span, not centerline pitch.
 
 This prevents the same spacing value from being copied into both the boundary and pattern records.
 
-## Schedules count completed structural strands
+## Schedule terminology corrected in Batch 009
 
-The constructor is now `strand_group()`, not `layer_group()`:
+The original lesson used `strand_group()` and described its count as individual completed strands. The implemented generator uses the count to repeat a **complete continuous grid path layer**. New code therefore uses:
 
 ```scad
-strand_group(
+path_layer_group(
     orientation = 0,
-    strand_count = 4,
+    layer_count = 4,
     pattern_set_name = "OUTER2_SQUARE_INNER_HEX",
     clear_gap_after = 0
 );
 ```
 
-`strand_count = 4` means four reliable completed structural strands. Under the active process, each strand requires two deposited layers, so the group requires eight deposited layers.
+`layer_count = 4` means four complete X-running serpentine grid layers. Under the active process, each complete path layer is 0.4 mm high and requires two raw deposited layers, so the group requires eight raw layers.
 
-Changing the nozzle or layer-height process does not change the schedule's structural meaning.
+`strand_group()` remains a compatibility wrapper for the earlier API vector shape.
 
 ## Vertical clear gap is independent
 
 `clear_gap_after` is empty Z distance after a complete group:
 
 ```scad
-strand_group(0, 1, "SQUARE_COUPON", 2);
-strand_group(90, 1, "SQUARE_COUPON", 0);
+path_layer_group(0, 1, "SQUARE_COUPON", 2);
+path_layer_group(90, 1, "SQUARE_COUPON", 0);
 ```
 
 This describes:
 
-1. one completed lower X strand;
+1. one complete lower X grid path layer;
 2. 2 mm of clear vertical separation;
-3. one completed upper Y strand.
+3. one complete upper Y grid path layer.
 
 For a 0.4 mm strand height, total stack height is:
 

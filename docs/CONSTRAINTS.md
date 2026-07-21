@@ -30,11 +30,11 @@ Grid count means clear openings. `n` openings require `n + 1` structural strands
 
 ## Vertical separation
 
-Clear vertical gap is separate from material height. It is measured between the top of one completed structural-strand group and the bottom of the next.
+Clear vertical gap is separate from material height. It is measured between the top of one completed structural path-layer group and the bottom of the next.
 
 ## Schedule units
 
-Schedule counts refer to completed structural strands. Deposited-layer counts are derived from the active process profile.
+Schedule counts refer to complete continuous structural path layers, not individual parallel strands. Deposited-layer counts are derived from the active process profile.
 
 ## First-layer parallel traces
 
