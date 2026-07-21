@@ -1,0 +1,45 @@
+Batch 018 deletion list
+Base commit: fa1535a
+
+Delete these retired files and directories through the GitHub web interface.
+They are disconnected from every active workbench.
+
+BATCH_017_RETIREMENTS.txt
+api/grid_stack_v3.scad
+api/v3/geometry.scad
+api/v3/indices.scad
+api/v3/math.scad
+api/v3/paths.scad
+api/v3/reporting.scad
+api/v3/schema.scad
+api/v3/validation.scad
+config/coupons.scad
+config/schedules.scad
+geometry/orthogonal_stack_coupon.scad
+geometry/vertical_gap_coupon.scad
+lib/coupon_framework.scad
+lib/coupon_reporting.scad
+lib/structural_coupon_reporting.scad
+lib/structural_coupon_validation.scad
+objects/coupon_3x3_span6_gap2_v1.scad
+objects/coupons/README.md
+objects/coupons/coupon-3x3-span5-gap1-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span5-gap2-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span5-gap3-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span6-gap0-direct-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span6-gap1-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span6-gap2-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span6-gap3-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span7-gap1-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span7-gap2-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span7-gap3-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span8-gap1-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span8-gap2-pla-plus-0p4-v1.scad
+objects/coupons/coupon-3x3-span8-gap3-pla-plus-0p4-v1.scad
+paths/structural_coupon_paths.scad
+tests/api_v3_coupon_contract.scad
+tests/framework_freeze_contract.scad
+tests/positive_gap_coupon_contract.scad
+tests/structural_coupon_contract.scad
+
+After deleting the individual files, remove the empty api/v3 and objects/coupons directories if GitHub still displays them. Git does not retain empty directories.

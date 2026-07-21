@@ -1,103 +1,58 @@
 # Architecture
 
-## Development workbench
+## Workbench routing
 
-`main.scad` performs mutable catalog orchestration:
-
-1. load constructors, indexes, and mathematics;
-2. load Customizer selectors and catalogs;
-3. resolve named records;
-4. validate the general data model;
-5. validate rectangular framework version 2;
-6. select direct or positive-gap support strategy;
-7. generate ordered paths;
-8. validate and report the paths;
-9. render printable geometry or diagnostics.
-
-The workbench is for exploration and qualification. Permanent objects belong under `objects/`.
-
-## Frozen rectangular routes
-
-### Direct-contact reference
+Each executable wrapper defines Customizer-visible values and includes `main.scad`.
 
 ```text
-qualified process
+Customizer wrapper
         ↓
-count_boundary rectangle
+config/defaults.scad resolves stable parameter names
         ↓
-continuous lower X path with lead-in
+workbench registry selects one project
         ↓
-continuous upper Y path
-        ↓
-direct-contact solid
+shared validation, reporting, paths, and geometry
 ```
 
-### Positive-gap coupon
+The wrappers are:
 
 ```text
-qualified process
-        ↓
-count_boundary rectangle
-        ↓
-continuous lower Y witness with lead-in
-        ↓
-continuous X riser path repeated through gap
-        ↓
-continuous upper Y test aligned above witness
-        ↓
-positive-gap solid
+workbenches/coupons.scad
+workbenches/laboratory.scad
+workbenches/first-layer.scad
+workbenches/catalog.scad
 ```
 
-The riser path creates physical access to the upper grid without independent supports, lift moves, or floating geometry.
+`default.scad` is the maintainer-oriented development wrapper.
 
-## Terminology layers
+## Configurable rectangular grid
+
+Coupon and Laboratory presets share one fixed engine:
 
 ```text
-primitive trace
-    nozzle diameter × one deposited layer
-
-structural strand section
-    trace width × horizontal passes
-    trace height × vertical passes
-
-structural path layer
-    one complete continuous serpentine swept with the strand section
-
-riser wall
-    the structural-width path repeated through a layer-quantized gap
+CONFIGURABLE_GRID_PROCESS_PROFILES
+CONFIGURABLE_GRID_BOUNDARIES
+CONFIGURABLE_GRID_PATH_POLICIES
+        ↓
+rectangular_grid_path()
+        ↓
+printable_alternating_grid_stack()
 ```
 
-## Configuration layer
+The workbench changes records, not topology. Every deposited layer is one continuous open path. Successive layers alternate X/Y and remain in direct contact.
 
-`config/` contains mutable records for materials, nozzles, processes, active count boundaries, square coupon topology, coupon gap declarations, named projects, and deferred stubs. Configuration files do not create solids.
+## First-layer route
 
-## Path and geometry layers
+The First Layer workbench uses the independent variable parallel-trace grammar. It builds a mutable `first_layer_object()` and renders through API version 1 validation and geometry. Accepted historical first-layer recipes remain isolated under versioned APIs.
 
-`paths/` returns ordered point lists only.
+## Catalog route
 
-`geometry/` converts validated paths into solids and does not select projects.
+The Catalog registry is the destination for accepted immutable recipes. Laboratory and Coupon presets remain mutable and are not catalog products by themselves.
 
-- `orthogonal_stack_coupon.scad` implements the direct reference.
-- `vertical_gap_coupon.scad` implements the witness/riser/bridge strategy.
+## Preset and manufacturing separation
 
-## Saved objects and API isolation
+Customizer JSON stores OpenSCAD-visible parameters. An accepted product is promoted to an immutable `.scad` recipe. Slicer-specific requirements are stored in an associated 3MF manufacturing project and are not simulated by geometry offsets in OpenSCAD.
 
-Permanent coupon recipes import `api/grid_stack_v3.scad`.
+## Retired coupon implementation
 
-All behavior-affecting API v3 dependencies are inside `api/v3/`:
-
-```text
-indices
-schema
-math
-paths
-geometry
-validation
-reporting
-```
-
-API v3 does not import mutable workbench files. Incompatible changes require API version 4 rather than modification of version 3.
-
-## Deferred route
-
-Dimension boundaries, circles, polygons, mixed square/hex patterns, and expanded schedules remain named stubs. They fail workbench framework validation intentionally and do not receive partial implementations during rectangular maintenance.
+The fixed coupon matrix, positive-gap witness/riser/bridge routes, API version 3 coupon recipes, and coupon-specific tests are not part of the active architecture. They remain available through Git history and the `v0.1.0` release.

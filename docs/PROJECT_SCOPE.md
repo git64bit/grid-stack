@@ -4,29 +4,28 @@ Grid Stack generates printable open-grid structures from explicit continuous-noz
 
 ## Primary invariant
 
-Every deposited layer must be exactly one open continuous path with no internal lift, travel move, disconnected island, or independent closed loop.
+Every deposited layer is exactly one open continuous path with no internal lift, travel move, disconnected island, or independent closed loop.
 
-## Structural primitive
+## Active geometry grammar
 
-One trace and one deposited layer are not accepted structural units. The minimum structural unit is a composed strand with at least two horizontal passes and two vertical deposited layers.
+The current shared grid engine provides:
 
-## Environment rule
+- rectangular count boundaries;
+- independent X/Y cell counts and clear spans;
+- parallel traces with perpendicular square connectors and square ends;
+- alternating X/Y deposited layers in direct contact;
+- outside dimensions derived from the count boundary and deposited trace size.
 
-Material, nozzle diameter, layer height, pass composition, and observed bridge behavior form one qualified process environment. Changing any member requires a new named process profile and requalification.
+The variable parallel-trace First Layer workbench is a separate supported grammar.
 
-## Boundary rule
+## Workbench rule
 
-A boundary has one authoritative mode:
+Coupon and Laboratory variations are Customizer presets applied to generic generators. Hard-coded matrices and one-file-per-experiment source generation are outside the active workflow.
 
-- outside dimensions for a finished part; or
-- clear-opening count and clear span for a controlled coupon.
+## Promotion rule
 
-Derived dimensions must not be copied back into configuration as competing inputs.
+A preset remains mutable until it is physically tested and accepted. Promotion creates an immutable `.scad` recipe and a Catalog registration. Slicer-only settings belong in the associated 3MF manufacturing project.
 
-## Schedule rule
+## Project boundary
 
-Schedules count complete continuous structural path layers. Each path layer covers the selected boundary using the composed structural-strand section. Raw deposited layers and resulting stack height are derived from the selected process profile.
-
-## Batch 003 boundary
-
-Batch 003 defines and validates boundary modes, vertical clear gaps, and coupon matrices. It does not generate paths or geometry.
+Circles, polygons, hex fields, mixed topologies, curved terminations, disconnected paths, and intentional layer separation are not partially implemented in this framework. A conflicting topology or geometry grammar belongs in another project.

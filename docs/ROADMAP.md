@@ -1,34 +1,22 @@
 # Development Roadmap
 
-## Completed
+## Completed OpenSCAD framework
 
-- Batch 001: specification and record model.
-- Batch 002: materials, nozzles, and qualified process profiles.
-- Batch 003: count and dimension boundary records; coupon matrix specification.
-- Batch 004: first continuous rectangular path.
-- Batch 005: saved-object contract and API version assertion.
-- Batch 006: variable parallel first-layer traces.
-- Batch 007: immutable PLA+ and TPU first-layer recipes.
-- Batch 008: accepted direct-contact structural coupon.
-- Batch 009: rectangular framework audit and preliminary freeze.
-- Batch 010: positive-gap support, API version 3, and complete coupon recipes.
+- explicit material, nozzle, process, boundary, path, and project records;
+- continuous rectangular path generation;
+- alternating direct-contact deposited layers;
+- preset-native Coupon and Laboratory workbenches;
+- preset-native variable-trace First Layer workbench;
+- separate Catalog registry;
+- immutable saved-object API pattern;
+- retirement of the hard-coded coupon matrix and positive-gap coupon implementation.
 
-## Frozen maintenance phase
+## Current stable phase
 
-The rectangular count-boundary coupon framework is complete. Near-term work should be limited to:
+The OpenSCAD framework is complete for the current rectangular grammar. Changes should now be limited to defects, workbench additions that use the existing grammar, and promotion of physically accepted presets into immutable Catalog objects.
 
-- physical coupon observations;
-- corrected recipes created as new revisions;
-- printer and material environment records;
-- defects that prevent the frozen coupons from reconstructing or printing.
+## Next application phase
 
-## Deferred stubs
+The web application should reproduce the workbench and preset workflow, generate or consume OpenSCAD parameter sets, expose Catalog objects, and associate accepted geometry with slicer 3MF manufacturing projects.
 
-- dimension-envelope fitting;
-- circular boundaries;
-- regular and custom polygon boundaries;
-- mixed square/hex pattern zones;
-- expanded 4-5-6-5-4 schedules;
-- other connector strategies.
-
-A deferred feature starts a new framework/API version rather than modifying API version 3.
+A topology or geometry grammar that conflicts with the current continuous rectangular contract belongs in a separate project or a deliberately versioned future framework.

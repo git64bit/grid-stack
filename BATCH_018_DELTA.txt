@@ -1,0 +1,22 @@
+Batch 018: retire hard-coded coupon implementation
+Base commit: fa1535a
+Version: 1.0.8
+
+Changed files:
+- BASE_SHA
+- VERSION
+- README.md
+- grid_stack.scad
+- docs/ARCHITECTURE.md
+- docs/PROJECT_SCOPE.md
+- docs/ROADMAP.md
+- objects/README.md
+- tests/README.md
+
+New files:
+- BATCH_018_DELTA.txt
+- BATCH_018_DELETIONS.txt
+
+Deletion instructions are listed in BATCH_018_DELETIONS.txt. The archive contains only new or changed files; retired files cannot be removed by copying a delta archive over the repository.
+
+Runtime geometry and workbench routing are unchanged. The cleanup removes only the disconnected coupon matrix, positive-gap implementation, API v3 coupon recipes, and coupon-specific contract tests.

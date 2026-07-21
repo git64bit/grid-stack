@@ -1,79 +1,56 @@
 # Grid Stack
 
-Grid Stack is an OpenSCAD project for continuous-nozzle-path structures, calibration sheets, and composite reinforcement grids.
+Grid Stack is a preset-driven OpenSCAD framework for continuous-nozzle-path grids and first-layer trace objects.
 
-## Frozen rectangular framework
+## Active workbenches
 
-Version 1.0 freezes the urgent framework around:
-
-```text
-count_boundary()
-rectangular clear-opening grids
-square turns and square terminations
-one continuous open path per deposited layer
-explicit material, nozzle, printer, and process records
-immutable saved-object recipes
-```
-
-The active calibration set contains thirteen objects:
+Open the required entry point directly:
 
 ```text
-1 direct-contact reference: 6 mm span / 0 mm gap
-12 positive-gap coupons:    spans 5, 6, 7, 8 mm × gaps 1, 2, 3 mm
+workbenches/coupons.scad      generic rectangular coupon generator
+workbenches/laboratory.scad   mutable rectangular Grid Panel generator
+workbenches/first-layer.scad  variable parallel-trace first-layer generator
+workbenches/catalog.scad      immutable-product registry entry point
 ```
 
-## Positive-gap construction
+`default.scad` remains the broad development wrapper.
 
-A positive-gap coupon is not floating geometry. It uses three continuous paths:
+## Coupon workflow
+
+Coupons are no longer represented by hard-coded matrices or one source file per variation. The Coupon workbench exposes the same rectangular count-boundary engine used by the Laboratory. Each variation is created in the Customizer and saved as a named preset.
+
+The active rectangular contract is:
 
 ```text
-upper Y test grid
-        ↑ supported by X riser walls
-X riser path repeated through the requested gap
-        ↑ begins on the witness crossings
-lower Y witness grid with the only external lead-in
+one continuous open nozzle path per deposited layer
+parallel traces with perpendicular square connectors and square ends
+alternating X/Y deposited layers
+cell count and clear span derive the outside dimensions
+no filler perimeter border
 ```
 
-The witness and upper test grids are vertically aligned. If a bridge sags by the selected clearance, it reaches the known witness strand below. Every riser layer repeats the same continuous open X path.
+## First-layer workflow
 
-## Workbench
+The First Layer workbench retains the separate variable-trace grammar. Its trace lengths, spacing, orientation, lead-in, process, and render mode are saved in named presets.
 
-Open `main.scad` and select any coupon project in the Customizer. The default is:
+`first-layer-0u2Z-anyXY.scad` remains as a compatibility entry point and redirects to that workbench.
+
+## Promotion workflow
 
 ```text
-COUPON_3X3_SPAN6_GAP1
+mutable Customizer preset
+        ↓
+render and physical test
+        ↓
+immutable .scad geometry recipe
+        ↓
+Catalog registration
+        ↓
+associated slicer 3MF manufacturing project
 ```
 
-Output modes:
+OpenSCAD presets describe geometry. Slicer-only requirements, including horizontal expansion, remain in the associated 3MF project rather than being added to Grid Stack geometry.
 
-```text
-structural_coupon   printable coupon geometry
-path_preview        numbered non-printable centerline diagnostic
-report_only         validation and dimensions only
-```
+## Historical implementation
 
-## Permanent recipes
-
-The full set is under:
-
-```text
-objects/coupons/
-```
-
-Every recipe imports `api/grid_stack_v3.scad`, embeds all geometry-affecting values, asserts API/schema/framework versions, and calls one public rendering module.
-
-## First-layer tool
-
-`first-layer-0u2Z-anyXY.scad` remains the independent primitive-trace tool for first-layer calibration and anti-warp underlays.
-
-## Deferred stubs
-
-The following remain named but inactive:
-
-- dimension-envelope fitting;
-- circular boundaries;
-- regular and custom polygon boundaries;
-- mixed square/hex pattern zones;
-- expanded schedules beyond the frozen coupon strategies.
-
-See `docs/FRAMEWORK_FREEZE.md` and `docs/LESSON_010.md`.
+The former hard-coded coupon matrix, positive-gap coupon routes, API version 3 coupon recipes, and their contract tests were retired after the preset-native workbenches passed testing. Git history and release `v0.1.0` preserve that implementation. Older batch and lesson documents are historical records and may refer to retired files.
