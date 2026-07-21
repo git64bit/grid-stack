@@ -19,7 +19,7 @@ module validate_nozzle(nozzle) {
     assert(nozzle[NZ_DIAMETER] > 0, "Nozzle diameter must be positive.");
 }
 
-module validate_process(process, material, nozzle) {
+module validate_process(process, material, nozzle, allow_laboratory = false) {
     assert(process[PX_MATERIAL] == material[MAT_NAME],
         "Process material lookup does not match the process record.");
     assert(process[PX_NOZZLE] == nozzle[NZ_NAME],
@@ -35,8 +35,14 @@ module validate_process(process, material, nozzle) {
         "A structural strand requires at least two deposited layers.");
     assert(process[PX_BRIDGE_MAX] > 0,
         "Maximum unsupported span must be positive.");
-    assert(process[PX_QUALIFICATION] == "owner_tested",
-        "The active Grid Stack process must be owner-tested.");
+    assert(
+        process[PX_QUALIFICATION] == "owner_tested" ||
+        (allow_laboratory &&
+         process[PX_QUALIFICATION] == "laboratory_unqualified"),
+        allow_laboratory
+            ? "Laboratory process qualification must be owner_tested or laboratory_unqualified."
+            : "The active Grid Stack process must be owner-tested."
+    );
     assert(is_integer_value(process[PX_REVISION]) && process[PX_REVISION] >= 1,
         "Process revision must be a positive integer.");
 }

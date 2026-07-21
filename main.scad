@@ -223,7 +223,9 @@ module run_rectangular_grid_project() {
 module run_laboratory_grid_panel() {
     project = named_record(PROJECTS, wb_project_name, "project");
     process = named_record(
-        PROCESS_PROFILES, project[PR_PROCESS], "process profile"
+        LABORATORY_PROCESS_PROFILES,
+        project[PR_PROCESS],
+        "laboratory process profile"
     );
     material = named_record(MATERIALS, process[PX_MATERIAL], "material");
     nozzle = named_record(NOZZLES, process[PX_NOZZLE], "nozzle");
@@ -237,7 +239,7 @@ module run_laboratory_grid_panel() {
 
     validate_material(material);
     validate_nozzle(nozzle);
-    validate_process(process, material, nozzle);
+    validate_process(process, material, nozzle, true);
     validate_boundary(boundary, process, nozzle);
     validate_path_policy(path_policy_record);
     validate_pattern_set(pattern_set_record, boundary, process, nozzle);
@@ -250,6 +252,7 @@ module run_laboratory_grid_panel() {
         path_policy_record,
         pattern_set_record,
         wb_lab_deposited_layer_count,
+        wb_lab_deposited_layer_height,
         wb_lab_first_layer_orientation
     );
 
@@ -261,6 +264,7 @@ module run_laboratory_grid_panel() {
         boundary,
         path_policy_record,
         wb_lab_deposited_layer_count,
+        wb_lab_deposited_layer_height,
         wb_lab_first_layer_orientation,
         wb_report_level
     );

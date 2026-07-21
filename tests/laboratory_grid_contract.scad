@@ -20,7 +20,11 @@ include <../config/path_policies.scad>
 include <../config/patterns.scad>
 
 project = LABORATORY_PRINTABLE_PROJECTS[0];
-process = named_record(PROCESS_PROFILES, project[PR_PROCESS], "process");
+process = named_record(
+    LABORATORY_PROCESS_PROFILES,
+    project[PR_PROCESS],
+    "laboratory process"
+);
 nozzle = named_record(NOZZLES, process[PX_NOZZLE], "nozzle");
 boundary = named_record(BOUNDARIES, project[PR_BOUNDARY], "boundary");
 policy = named_record(PATH_POLICIES, project[PR_PATH_POLICY], "path policy");
@@ -35,6 +39,12 @@ assert(boundary[B_CLEAR_SPAN_X] == 6 && boundary[B_CLEAR_SPAN_Y] == 6,
 assert(policy[PP_LEAD_IN] == 30,
     "Laboratory grid panel must default to a 30 mm lead-in.");
 
+assert(nearly_equal(wb_lab_deposited_layer_height, 0.2),
+    "Laboratory grid panel must default to a 0.2 mm layer height.");
+assert(nearly_equal(trace_height(process), wb_lab_deposited_layer_height),
+    "The Customizer layer height must define the laboratory process.");
+assert(process[PX_QUALIFICATION] == "laboratory_unqualified",
+    "The mutable panel must not reuse a qualified catalog process.");
 assert(wb_lab_deposited_layer_count == 8,
     "Laboratory grid panel must default to eight deposited layers.");
 assert(wb_lab_first_layer_orientation == "X",
@@ -52,6 +62,7 @@ validate_laboratory_grid_stack(
     policy,
     pattern,
     wb_lab_deposited_layer_count,
+    wb_lab_deposited_layer_height,
     wb_lab_first_layer_orientation
 );
 

@@ -7,10 +7,30 @@
 // Role: Lets experimental Grid Stack objects use the frozen engine before
 //       physical acceptance and later promotion into Catalog.
 // Requires: Resolved wb_lab_* values and record constructors.
-// Exports: LABORATORY_BOUNDARIES, LABORATORY_PATH_POLICIES,
-//          LABORATORY_PRINTABLE_PROJECTS, LABORATORY_DEFERRED_PROJECTS,
-//          and LABORATORY_PROJECTS.
+// Exports: LABORATORY_PROCESS_PROFILES, LABORATORY_BOUNDARIES,
+//          LABORATORY_PATH_POLICIES, LABORATORY_PRINTABLE_PROJECTS,
+//          LABORATORY_DEFERRED_PROJECTS, and LABORATORY_PROJECTS.
 //////////////////////////////////////////////////////////////////////
+
+
+LABORATORY_PROCESS_PROFILES = [
+    process_profile(
+        name = "LAB_PLA_PLUS_0P4_CURRENT",
+        material_name = "PLA_PLUS",
+        nozzle_name = "BRASS_0P4",
+        layer_height = wb_lab_deposited_layer_height,
+        width_passes = 2,
+        height_passes = 2,
+        bridge_max = 6.0,
+        qualification = "laboratory_unqualified",
+        revision = 1,
+        notes = str(
+            "Mutable laboratory process. Uniform deposited layer height is ",
+            wb_lab_deposited_layer_height,
+            " mm. Promotion requires a new immutable qualified profile."
+        )
+    )
+];
 
 LABORATORY_BOUNDARIES = [
     count_boundary(
@@ -45,7 +65,7 @@ LABORATORY_PATH_POLICIES = [
 LABORATORY_PRINTABLE_PROJECTS = [
     project_spec(
         name = "GRID_PANEL_LAB",
-        process_name = "PLA_PLUS_0P4_LH0P2_W2_H2_R1",
+        process_name = "LAB_PLA_PLUS_0P4_CURRENT",
         boundary_name = "LAB_GRID_PANEL_BOUNDARY",
         path_policy_name = "LAB_GRID_PANEL_PATH",
         pattern_set_name = "SQUARE_COUPON",

@@ -1,0 +1,39 @@
+Grid Stack Batch 015 — Customizer Layer Height
+Base commit: 58c12a1
+
+This archive contains new and changed files only.
+Copy each file into the existing repository while preserving its path.
+
+New files:
+- tests/laboratory_layer_height_contract.scad
+
+Changed files:
+- BASE_SHA
+- VERSION
+- config/defaults.scad
+- lib/laboratory_grid_stack.scad
+- lib/validation.scad
+- main.scad
+- registries/laboratory_projects.scad
+- tests/laboratory_grid_contract.scad
+- workbenches/laboratory.scad
+
+No files are deleted.
+
+Primary acceptance entry point:
+- workbenches/laboratory.scad
+
+New Laboratory control:
+- deposited layer height: default 0.2 mm, range 0.05 through 0.4 mm
+
+Behavior:
+- every physical deposited layer uses the same selected height
+- each layer Z position is layer_index times deposited_layer_height
+- total stack height is deposited_layer_count times deposited_layer_height
+- the mutable Laboratory process is rebuilt from the Customizer value
+- qualified catalog process profiles remain unchanged
+
+Expected default stack:
+- 8 deposited layers
+- 0.2 mm per layer
+- 1.6 mm total height

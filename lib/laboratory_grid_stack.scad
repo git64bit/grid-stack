@@ -12,7 +12,7 @@
 //          report_laboratory_grid_stack().
 //////////////////////////////////////////////////////////////////////
 
-GRID_STACK_LABORATORY_STACK_VERSION = 1;
+GRID_STACK_LABORATORY_STACK_VERSION = 2;
 
 // Function: laboratory_orientation_degrees()
 // Synopsis: Converts the user-facing X/Y selector to path degrees.
@@ -31,9 +31,10 @@ module validate_laboratory_grid_stack(
     path_policy_record,
     pattern_set_record,
     deposited_layer_count,
+    deposited_layer_height,
     first_orientation
 ) {
-    assert(GRID_STACK_LABORATORY_STACK_VERSION == 1,
+    assert(GRID_STACK_LABORATORY_STACK_VERSION == 2,
         "Unexpected laboratory stack contract version.");
     assert(boundary_is_count_driven(boundary) &&
            boundary[B_KIND] == "rectangle",
@@ -52,7 +53,15 @@ module validate_laboratory_grid_stack(
         "Laboratory grid panels have one open endpoint and no lead-out.");
     assert(process[PX_WIDTH_PASSES] >= 2 &&
            process[PX_HEIGHT_PASSES] >= 2,
-        "The laboratory grid must retain the qualified structural process.");
+        "The laboratory grid must retain the two-pass structural process.");
+    assert(deposited_layer_height > 0,
+        "Deposited layer height must be positive.");
+    assert(nearly_equal(trace_height(process), deposited_layer_height),
+        "Laboratory process and Customizer layer height must agree.");
+    assert(deposited_layer_height <= nozzle[NZ_DIAMETER],
+        "Deposited layer height cannot exceed nozzle diameter.");
+    assert(process[PX_QUALIFICATION] == "laboratory_unqualified",
+        "Mutable grid-panel work must use a laboratory process profile.");
     assert(deposited_layer_count >= 1 &&
            is_integer_value(deposited_layer_count),
         "Deposited layer count must be a positive integer.");
@@ -82,17 +91,21 @@ module report_laboratory_grid_stack(
     boundary,
     path_policy_record,
     deposited_layer_count,
+    deposited_layer_height,
     first_orientation,
     report_level = "full"
 ) {
     deposited_height = trace_height(process);
+
+    assert(nearly_equal(deposited_height, deposited_layer_height),
+        "Reported layer height must match the Customizer value.");
     total_height = deposited_layer_count * deposited_height;
 
     echo("------------------------------------------------------------");
     echo(str("Grid Stack laboratory project: ", project[PR_NAME]));
     echo(str("Material: ", material[MAT_NAME]));
     echo(str("Nozzle: ", nozzle[NZ_DIAMETER], " mm"));
-    echo(str("Deposited layer height: ", deposited_height, " mm"));
+    echo(str("Uniform deposited layer height: ", deposited_height, " mm"));
     echo(str("Composed path width: ", strand_width(process, nozzle), " mm"));
     echo(str("Count boundary: ", boundary[B_CELLS_X], " x ",
         boundary[B_CELLS_Y], " clear openings"));

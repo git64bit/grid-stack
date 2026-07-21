@@ -36,6 +36,8 @@ lab_clear_span_y = 6; // [0.4:0.2:20]
 lab_lead_in = 30; // [0:1:100]
 
 /* [Layer stack] */
+// Uniform physical height added by every deposited pass.
+lab_deposited_layer_height = 0.2; // [0.05:0.05:0.4]
 lab_deposited_layer_count = 8; // [1:1:100]
 lab_first_layer_orientation = "X"; // [X,Y]
 
