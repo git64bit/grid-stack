@@ -25,8 +25,11 @@ module validate_process(process, material, nozzle, allow_laboratory = false) {
     assert(process[PX_NOZZLE] == nozzle[NZ_NAME],
         "Process nozzle lookup does not match the process record.");
     assert(process[PX_LAYER_H] > 0, "Layer height must be positive.");
-    assert(process[PX_LAYER_H] <= nozzle[NZ_DIAMETER],
-        "Layer height must not exceed nozzle diameter in this project.");
+    assert(allow_laboratory ||
+           process[PX_LAYER_H] <= nozzle[NZ_DIAMETER],
+        allow_laboratory
+            ? "Laboratory layer height must be positive."
+            : "Layer height must not exceed nozzle diameter in this project.");
     assert(is_integer_value(process[PX_WIDTH_PASSES]) &&
            process[PX_WIDTH_PASSES] >= 2,
         "A structural strand requires at least two horizontal passes.");

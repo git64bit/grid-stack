@@ -1,0 +1,26 @@
+Grid Stack Batch 016 — Corrective Unrestricted Laboratory Height
+Base commit: 3852c24
+
+This archive contains new and changed files only.
+Copy each file into the existing repository while preserving its path.
+
+Changed files:
+- BASE_SHA
+- VERSION
+- lib/laboratory_grid_stack.scad
+- lib/validation.scad
+- tests/laboratory_layer_height_contract.scad
+- workbenches/laboratory.scad
+
+New files:
+- BATCH_016_DELTA.txt
+
+No files are deleted.
+
+Correction:
+- Laboratory deposited layer height is an unrestricted positive numeric field.
+- Values such as 1 mm or 10 mm are permitted as unqualified laboratory geometry.
+- Qualified Catalog process profiles still require layer height not to exceed nozzle diameter.
+- No vertical clear-gap control is added to GRID_PANEL_LAB.
+- Every layer starts at layer_index times deposited_layer_height.
+- Every deposited layer rests directly on the preceding layer.

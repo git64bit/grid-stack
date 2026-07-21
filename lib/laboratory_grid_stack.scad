@@ -58,8 +58,6 @@ module validate_laboratory_grid_stack(
         "Deposited layer height must be positive.");
     assert(nearly_equal(trace_height(process), deposited_layer_height),
         "Laboratory process and Customizer layer height must agree.");
-    assert(deposited_layer_height <= nozzle[NZ_DIAMETER],
-        "Deposited layer height cannot exceed nozzle diameter.");
     assert(process[PX_QUALIFICATION] == "laboratory_unqualified",
         "Mutable grid-panel work must use a laboratory process profile.");
     assert(deposited_layer_count >= 1 &&
@@ -120,7 +118,16 @@ module report_laboratory_grid_stack(
         first_orientation == "X" ? ", Y, X, Y..." : ", X, Y, X..."));
     echo(str("Total stack height: ", total_height, " mm"));
     echo(str("First-layer lead-in: ", path_policy_record[PP_LEAD_IN], " mm"));
+    echo("Every deposited layer rests directly on the preceding layer.");
     echo("One continuous open path is generated for every deposited layer.");
+
+    if (deposited_height > nozzle[NZ_DIAMETER])
+        echo(str(
+            "LABORATORY NOTICE: selected deposited layer height ",
+            deposited_height, " mm exceeds nozzle diameter ",
+            nozzle[NZ_DIAMETER],
+            " mm. Geometry is permitted but the process is unqualified."
+        ));
 
     if (report_level == "full")
         for (layer_index = [0 : deposited_layer_count - 1])
