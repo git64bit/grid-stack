@@ -2,10 +2,7 @@
 // LibFile: laboratory.scad
 // Project: Grid Stack
 // FileGroup: Executable Workbench
-// FileSummary: Laboratory-only Customizer and printable experiment entry point.
-// Role: Isolates mutable experiments and deferred projects from coupon and
-//       catalog users. Future route: /laboratory.
-// Includes: ../main.scad after all user-facing assignments.
+// FileSummary: Mutable Grid Panel laboratory and deferred-project entry point.
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
@@ -13,13 +10,8 @@
 // - One continuous open nozzle path per deposited layer.
 // - No intentional lift, idle travel, or disconnected printed subpaths.
 // - Parallel traces with perpendicular square connectors and square ends.
-// - Alternating X/Y structural layers inside a rectangular count_boundary().
+// - Alternating X/Y layers inside a rectangular count_boundary().
 // - Cell count and clear span derive the outside dimensions; no filler border.
-// - Trace size comes from the qualified nozzle and deposited layer height.
-// - Structural strands require at least two width and two height passes.
-// - Clear span, Z gap, trace size, and strand size remain distinct values.
-// - Saved objects are immutable SCAD recipes pinned to a versioned API.
-// - Laboratory objects reach Catalog only after physical acceptance.
 // - Conflicting topology or geometry grammar belongs in another project.
 //////////////////////////////////////////////////////////////////////
 
@@ -27,18 +19,17 @@
 project_name_selected = "GRID_PANEL_LAB"; // [GRID_PANEL_LAB,TUTORIAL_RECT_45654]
 
 /* [Grid panel count boundary] */
-lab_cells_x = 9; // [1:1:40]
-lab_cells_y = 9; // [1:1:40]
-lab_clear_span_x = 6; // [0.4:0.2:20]
-lab_clear_span_y = 6; // [0.4:0.2:20]
+lab_cells_x = 9;
+lab_cells_y = 9;
+lab_clear_span_x = 6;
+lab_clear_span_y = 6;
 
 /* [Continuous path] */
-lab_lead_in = 30; // [0:1:100]
+lab_lead_in = 30;
 
 /* [Layer stack] */
-// Uniform physical height added by every deposited pass.
 lab_deposited_layer_height = 0.2;
-lab_deposited_layer_count = 8; // [1:1:100]
+lab_deposited_layer_count = 8;
 lab_first_layer_orientation = "X"; // [X,Y]
 
 /* [Render mode] */

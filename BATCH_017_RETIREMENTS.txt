@@ -1,0 +1,21 @@
+Batch 017 disconnects the following legacy coupon-matrix implementation from
+all active workbenches. Do not delete these files until the new Customizer
+workflows pass OpenSCAD and print tests.
+
+Planned retirement after acceptance:
+- config/coupons.scad
+- config/schedules.scad
+- api/grid_stack_v3.scad
+- api/v3/
+- geometry/orthogonal_stack_coupon.scad
+- geometry/vertical_gap_coupon.scad
+- paths/structural_coupon_paths.scad
+- lib/coupon_framework.scad
+- lib/coupon_reporting.scad
+- lib/structural_coupon_reporting.scad
+- lib/structural_coupon_validation.scad
+- objects/coupon_3x3_span6_gap2_v1.scad
+- objects/coupons/
+- coupon-specific contract tests
+
+Git history and release v0.1.0 preserve the retired implementation.

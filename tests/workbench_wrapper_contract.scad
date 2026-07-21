@@ -2,20 +2,16 @@
 // LibFile: workbench_wrapper_contract.scad
 // Project: Grid Stack
 // FileGroup: Contract Test
-// FileSummary: Verifies wrapper fallback resolution and workbench identity.
+// FileSummary: Verifies wrapper fallback resolution and preset compatibility.
 //////////////////////////////////////////////////////////////////////
 
 include <../config/defaults.scad>
 
-assert(wb_workbench_name == "development",
-    "Direct main.scad fallback must use the development workbench.");
-assert(wb_project_name == "COUPON_3X3_SPAN6_GAP1",
-    "Default project fallback changed unexpectedly.");
-assert(wb_render_mode == "structural_coupon",
-    "Default render-mode fallback changed unexpectedly.");
-assert(wb_path_orientation == 0,
-    "Default path orientation changed unexpectedly.");
-assert(wb_report_level == "full",
-    "Default report level changed unexpectedly.");
+assert(wb_workbench_name == "development");
+assert(wb_project_name == "GRID_PANEL_LAB");
+assert(wb_render_mode == "structural_grid");
+assert(wb_lab_cells_x == 9 && wb_lab_cells_y == 9);
+assert(wb_lab_deposited_layer_count == 8);
+assert(wb_report_level == "full");
 
 echo("GRID STACK WORKBENCH WRAPPER CONTRACT: PASS");

@@ -6,7 +6,7 @@
 //              layers while alternating X- and Y-running paths.
 // Role: Implements the mutable laboratory panel without changing the frozen
 //       structural-coupon geometry or its versioned saved-object APIs.
-// Requires: structural_coupon_path(), process_math.scad, and
+// Requires: rectangular_grid_path(), process_math.scad, and
 //           square_trace_path_2d() from trace_layer.scad.
 // Exports: deposited_grid_layer_orientation(),
 //          printable_structural_trace_layer_path(), and
@@ -81,7 +81,7 @@ module printable_alternating_grid_stack(
                 layer_index,
                 first_orientation
             );
-            points = structural_coupon_path(
+            points = rectangular_grid_path(
                 boundary,
                 process,
                 nozzle,

@@ -1,0 +1,41 @@
+Batch 017 — Customizer-native generators and first-layer workbench
+Base commit: ca6a585
+
+New or changed files only:
+- BASE_SHA
+- VERSION
+- BATCH_017_DELTA.txt
+- BATCH_017_RETIREMENTS.txt
+- main.scad
+- default.scad
+- first-layer-0u2Z-anyXY.scad
+- config/defaults.scad
+- config/workbenches.scad
+- config/boundaries.scad
+- config/path_policies.scad
+- config/projects.scad
+- config/core_contract.scad
+- registries/configurable_grid_projects.scad
+- registries/coupon_projects.scad
+- registries/laboratory_projects.scad
+- registries/first_layer_projects.scad
+- paths/rectangular_grid.scad
+- geometry/alternating_grid_stack.scad
+- lib/configurable_grid_stack.scad
+- workbenches/coupons.scad
+- workbenches/laboratory.scad
+- workbenches/first-layer.scad
+- tests/alternating_grid_stack_contract.scad
+- tests/laboratory_grid_contract.scad
+- tests/laboratory_layer_height_contract.scad
+- tests/workbench_registry_contract.scad
+- tests/workbench_wrapper_contract.scad
+- tests/first_layer_workbench_contract.scad
+
+No deletions in this acceptance batch. Legacy coupon-matrix files are disconnected
+from active workbenches and listed in BATCH_017_RETIREMENTS.txt for deletion after
+Customizer and print acceptance.
+
+Corrective replacement:
+- FIRST_LAYER_TRACE_LAB working objects use the valid status "calibration".
+- The rejected status "laboratory_preset" is not part of the first-layer schema.
