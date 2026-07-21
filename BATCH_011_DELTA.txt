@@ -1,0 +1,16 @@
+Grid Stack Batch 011 delta
+Base commit: 5c381d3
+
+New files:
+- default.scad
+- tests/workbench_wrapper_contract.scad
+- BATCH_011_DELTA.txt
+
+Changed files:
+- main.scad
+- config/defaults.scad
+- BASE_SHA
+- VERSION
+
+Deleted files:
+- none

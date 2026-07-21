@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////
 // LibFile: main.scad
 // Project: Grid Stack
-// FileGroup: Development Entry Point
-// FileSummary: Orchestrates the frozen rectangular count-boundary coupon
-//              framework, all thirteen coupon cases, diagnostics, and stubs.
-// Role: Development and exploration entry point. Permanent printed constructs
-//       belong in objects/coupons/ and import explicit API version 3.
-// Includes: Current workbench foundation, mutable catalogs, direct-contact and
-//           positive-gap geometry, validation, reporting, and deferred stubs.
+// FileGroup: Workbench Orchestrator
+// FileSummary: Resolves wrapper inputs and orchestrates the frozen rectangular
+//              count-boundary coupon framework, diagnostics, and stubs.
+// Role: Rendering engine included by default.scad, generated wrappers, or tests.
+//       It remains directly renderable through internal fallback values.
+// Includes: Input resolver, mutable catalogs, direct-contact and positive-gap
+//           geometry, validation, reporting, and deferred stubs.
 //////////////////////////////////////////////////////////////////////
 
 include <grid_stack.scad>
@@ -34,7 +34,7 @@ include <lib/structural_coupon_validation.scad>
 include <lib/coupon_reporting.scad>
 include <lib/structural_coupon_reporting.scad>
 
-project = named_record(PROJECTS, project_name_selected, "project");
+project = named_record(PROJECTS, wb_project_name, "project");
 process = named_record(PROCESS_PROFILES, project[PR_PROCESS], "process profile");
 material = named_record(MATERIALS, process[PX_MATERIAL], "material");
 nozzle = named_record(NOZZLES, process[PX_NOZZLE], "nozzle");
@@ -59,20 +59,20 @@ validate_rectangular_coupon_framework(
 
 report_grid_stack(
     project, process, material, nozzle, boundary,
-    path_policy_record, pattern_set_record, schedule, report_level
+    path_policy_record, pattern_set_record, schedule, wb_report_level
 );
 
-if (report_coupon_series_enabled) {
+if (wb_report_coupon_series) {
     selected_coupon_series = named_record(
         COUPON_SERIES,
-        coupon_series_name_selected,
+        wb_coupon_series_name,
         "coupon series"
     );
     validate_coupon_series(selected_coupon_series);
     report_coupon_series(selected_coupon_series);
 }
 
-if (report_deferred_features_enabled)
+if (wb_report_deferred_features)
     report_deferred_features();
 
 clear_vertical_gap = coupon_schedule_clear_gap(schedule);
@@ -103,7 +103,7 @@ if (support_strategy == "direct_orthogonal") {
         lower_path, upper_path, boundary, process, nozzle
     );
 
-    if (render_mode == "structural_coupon")
+    if (wb_render_mode == "structural_coupon")
         printable_direct_contact_stack_coupon(
             lower_path, upper_path, process, nozzle
         );
@@ -140,7 +140,7 @@ else if (support_strategy == "witness_riser_bridge") {
         clear_vertical_gap
     );
 
-    if (render_mode == "structural_coupon")
+    if (wb_render_mode == "structural_coupon")
         printable_vertical_gap_stack_coupon(
             witness_path,
             riser_path,
@@ -154,18 +154,18 @@ else {
     assert(false, str("Unknown coupon support strategy: ", support_strategy));
 }
 
-if (render_mode == "path_preview") {
+if (wb_render_mode == "path_preview") {
     generated_path = rectangular_serpentine_path(
-        boundary, process, nozzle, path_policy_record, path_orientation
+        boundary, process, nozzle, path_policy_record, wb_path_orientation
     );
 
     validate_rectangular_serpentine_path(
         generated_path, boundary, process, nozzle,
-        path_policy_record, path_orientation
+        path_policy_record, wb_path_orientation
     );
 
     report_generated_path(
-        generated_path, boundary, process, nozzle, path_orientation
+        generated_path, boundary, process, nozzle, wb_path_orientation
     );
 
     diagnostic_path_preview(
@@ -174,13 +174,13 @@ if (render_mode == "path_preview") {
             boundary_size_x(boundary, process, nozzle),
             boundary_size_y(boundary, process, nozzle)
         ],
-        show_envelope = show_boundary_envelope,
-        show_point_numbers = show_path_point_numbers
+        show_envelope = wb_show_boundary_envelope,
+        show_point_numbers = wb_show_path_point_numbers
     );
 }
-else if (render_mode == "report_only") {
+else if (wb_render_mode == "report_only") {
     echo("Development report-only mode: no geometry generated.");
 }
-else if (render_mode != "structural_coupon") {
-    assert(false, str("Unknown render mode: ", render_mode));
+else if (wb_render_mode != "structural_coupon") {
+    assert(false, str("Unknown render mode: ", wb_render_mode));
 }

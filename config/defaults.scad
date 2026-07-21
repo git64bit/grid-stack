@@ -1,31 +1,45 @@
 //////////////////////////////////////////////////////////////////////
 // LibFile: defaults.scad
 // Project: Grid Stack
-// FileGroup: User Interface
-// FileSummary: Customizer selection for the accepted direct reference, all
-//              twelve positive-gap coupons, diagnostics, and reporting.
-// Role: Contains user-facing selectors only. Engineering records remain in
-//       the configuration catalogs and immutable files under objects/.
-// Exports: Project, render, path-preview, coupon-series, and report selectors.
+// FileGroup: Workbench Configuration
+// FileSummary: Resolves wrapper inputs into internal workbench values.
+// Role: Provides fallback values when main.scad is opened directly and accepts
+//       values supplied by default.scad, another generated wrapper, or -D.
+// Exports: wb_* values consumed only by main.scad.
 //////////////////////////////////////////////////////////////////////
 
-/* [Project selection] */
-project_name_selected = "COUPON_3X3_SPAN6_GAP1"; // [COUPON_3X3_SPAN6_GAP0_DIRECT,COUPON_3X3_SPAN5_GAP1,COUPON_3X3_SPAN5_GAP2,COUPON_3X3_SPAN5_GAP3,COUPON_3X3_SPAN6_GAP1,COUPON_3X3_SPAN6_GAP2,COUPON_3X3_SPAN6_GAP3,COUPON_3X3_SPAN7_GAP1,COUPON_3X3_SPAN7_GAP2,COUPON_3X3_SPAN7_GAP3,COUPON_3X3_SPAN8_GAP1,COUPON_3X3_SPAN8_GAP2,COUPON_3X3_SPAN8_GAP3,TUTORIAL_RECT_45654]
+wb_project_name = is_undef(project_name_selected)
+    ? "COUPON_3X3_SPAN6_GAP1"
+    : project_name_selected;
 
-/* [Render mode] */
-render_mode = "structural_coupon"; // [structural_coupon,path_preview,report_only]
+wb_render_mode = is_undef(render_mode)
+    ? "structural_coupon"
+    : render_mode;
 
-/* [Path diagnostic] */
-path_orientation = 0; // [0:X-running,90:Y-running]
-show_boundary_envelope = true;
-show_path_point_numbers = true;
+wb_path_orientation = is_undef(path_orientation)
+    ? 0
+    : path_orientation;
 
-/* [Coupon series] */
-report_coupon_series_enabled = false;
-coupon_series_name_selected = "PLA_PLUS_BRIDGE_GAP_3X3"; // [PLA_PLUS_BRIDGE_GAP_3X3]
+wb_show_boundary_envelope = is_undef(show_boundary_envelope)
+    ? true
+    : show_boundary_envelope;
 
-/* [Framework audit] */
-report_deferred_features_enabled = false;
+wb_show_path_point_numbers = is_undef(show_path_point_numbers)
+    ? true
+    : show_path_point_numbers;
 
-/* [Console report] */
-report_level = "full"; // [summary,full]
+wb_report_coupon_series = is_undef(report_coupon_series_enabled)
+    ? false
+    : report_coupon_series_enabled;
+
+wb_coupon_series_name = is_undef(coupon_series_name_selected)
+    ? "PLA_PLUS_BRIDGE_GAP_3X3"
+    : coupon_series_name_selected;
+
+wb_report_deferred_features = is_undef(report_deferred_features_enabled)
+    ? false
+    : report_deferred_features_enabled;
+
+wb_report_level = is_undef(report_level)
+    ? "full"
+    : report_level;
