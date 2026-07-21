@@ -4,102 +4,96 @@
 
 ### Material specification
 
-Identifies a filament family such as PLA+ or TPU. It contains no nozzle or layer dimensions.
+Identifies a filament family such as PLA+ or TPU.
 
 ### Nozzle specification
 
-Identifies installed hardware and its nominal diameter. Changing nozzle diameter changes the trace-width basis.
+Identifies installed nozzle hardware and its nominal diameter.
+
+### Printer specification
+
+Identifies machine and build surface. API version 3 requires the field even when its value is explicitly unrecorded.
 
 ### Process profile
 
-Joins material and nozzle with layer height, pass composition, bridge observation, qualification, and revision.
+Joins material, nozzle, and printer with deposited layer height, horizontal and vertical pass counts, bridge observation, qualification, and revision.
 
-Process profiles are immutable by convention. Add a new named revision when the environment changes.
+Derived values are never stored independently:
 
-## Derived process dimensions
-
-`lib/process_math.scad` derives:
-
-- trace width;
-- trace height;
-- structural strand width;
-- structural strand height.
-
-These values are not duplicated in configuration.
+```text
+trace width       = nozzle diameter
+trace height      = deposited layer height
+strand width      = trace width × horizontal passes
+strand height     = trace height × vertical passes
+```
 
 ## Boundary records
 
-Both boundary constructors produce the same record layout but establish different authoritative inputs.
+The frozen coupon API supports only count-driven rectangles:
 
-### Dimension boundary
+```scad
+count_boundary(
+    name,
+    cells_x,
+    cells_y,
+    clear_span_x,
+    clear_span_y
+);
+```
 
-Stores explicit outside dimensions. Grid count will be derived later.
+Outside dimensions derive from clear-opening count and structural-strand width.
 
-### Count boundary
+Dimension and non-rectangular boundary records remain workbench stubs and are not part of API version 3.
 
-Stores clear-opening count and clear span. Outside dimensions are derived using the active structural strand width.
+## Workbench project records
 
-## Pattern records
+The mutable workbench resolves named process, boundary, path-policy, pattern, and schedule records. These records are useful for Customizer exploration and matrix reporting, but they are not permanent saved objects.
 
-Pattern topology remains independent from dimensions. Each zone declares whether its spacing comes from:
+## Positive-gap support strategy
 
-- a fixed strand pitch;
-- the selected count boundary's clear span.
+The workbench and API version 3 derive three paths:
 
-## Stack schedules
+```text
+witness path: orientation 90°, with lead-in
+riser path:   orientation 0°, no lead-in
+upper test:   orientation 90°, no lead-in
+```
 
-A stack schedule contains ordered `path_layer_group()` records. Each group stores:
+The witness and upper test point lists are identical after removing the witness lead-in point. The riser begins at their shared lower-left crossing.
 
-- orientation;
-- complete continuous structural path-layer count;
-- pattern-set reference;
-- clear vertical gap after the group.
+## Immutable API version 3 coupon
 
-Raw deposited-layer count and total height are derived from the active process.
-
-## Coupon series
-
-A coupon series references lists of count boundaries and stack schedules. Their Cartesian product defines every planned coupon case without duplicating records.
-
-## Project specification
-
-A project references one process profile, boundary, path policy, pattern set, and stack schedule.
-
-## Saved Grid Stack object
-
-`grid_stack_object()` is the top-level permanent recipe record. It embeds:
+`structural_coupon_object()` embeds:
 
 - object identity and revision;
 - required API version;
-- object-schema version;
+- coupon-schema version;
 - source release;
+- framework base commit;
 - material record;
 - nozzle record;
-- process record;
-- boundary record;
-- path-policy record;
-- pattern-set record;
-- stack-schedule record;
-- path orientation;
+- printer record;
+- structural process record;
+- count boundary record;
+- clear vertical gap;
+- lead-in length;
+- support strategy;
 - lifecycle status and notes.
 
-The embedded records make the recipe independent of mutable configuration catalogs. The object remains a record-like vector, with field positions defined by `GSO_*` indexes in `lib/indices.scad`.
+No mutable catalog lookup occurs when a saved coupon is opened.
 
 ## Version distinction
 
-The API version defines the public callable contract. The object-schema version defines the saved record layout. The release documents a project milestone. The Git commit or tag identifies the exact implementation.
-
-## Parallel trace records
-
-A configurable first layer stores engineering traces as:
-
-```scad
-[axis_min, axis_max, perpendicular_position]
+```text
+API version          public constructors and rendering module
+schema version       saved vector field layout and meaning
+framework version    supported geometry and validation behavior
+release              project milestone
+containing Git commit exact complete repository source
 ```
 
-The first two fields determine one trace length. Differences between consecutive perpendicular positions determine repeat distances. Traversal direction is derived from record parity, and adjacent records must share the endpoint required by the square connector.
+A file cannot embed the hash of the future commit that will contain it. The object records the accepted framework base commit, while Git itself records the containing commit.
 
-A saved first-layer object embeds the trace list, material, nozzle, process, orientation, lead-in, API version, and first-layer schema version.
+## Historical records
 
-
-`strand_group()` remains a compatibility wrapper for API v1 and early lessons. Its stored count has the same path-layer meaning.
+API versions 1 and 2 remain unchanged for earlier diagnostic and first-layer recipes. Their record layouts and compatibility aliases are retained as history, not used by the new coupon files.

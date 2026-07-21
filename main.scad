@@ -3,11 +3,11 @@
 // Project: Grid Stack
 // FileGroup: Development Entry Point
 // FileSummary: Orchestrates the frozen rectangular count-boundary coupon
-//              framework, diagnostics, direct-contact geometry, and stubs.
+//              framework, all thirteen coupon cases, diagnostics, and stubs.
 // Role: Development and exploration entry point. Permanent printed constructs
-//       belong in objects/ and must import an explicit versioned API.
-// Includes: Current workbench API, mutable catalogs, framework contract,
-//           rectangular coupon paths/geometry, validation, and reporting.
+//       belong in objects/coupons/ and import explicit API version 3.
+// Includes: Current workbench foundation, mutable catalogs, direct-contact and
+//           positive-gap geometry, validation, reporting, and deferred stubs.
 //////////////////////////////////////////////////////////////////////
 
 include <grid_stack.scad>
@@ -29,6 +29,7 @@ include <config/deferred_features.scad>
 include <paths/structural_coupon_paths.scad>
 include <geometry/structural_strand.scad>
 include <geometry/orthogonal_stack_coupon.scad>
+include <geometry/vertical_gap_coupon.scad>
 include <lib/structural_coupon_validation.scad>
 include <lib/coupon_reporting.scad>
 include <lib/structural_coupon_reporting.scad>
@@ -74,49 +75,86 @@ if (report_coupon_series_enabled) {
 if (report_deferred_features_enabled)
     report_deferred_features();
 
-lower_group = schedule[SS_GROUPS][0];
-upper_group = schedule[SS_GROUPS][1];
-lower_orientation = lower_group[PLG_ORIENTATION];
-upper_orientation = upper_group[PLG_ORIENTATION];
 clear_vertical_gap = coupon_schedule_clear_gap(schedule);
 lower_lead_in = path_policy_record[PP_LEAD_IN];
+support_strategy = coupon_support_strategy(schedule);
 
-lower_path = structural_coupon_path(
-    boundary, process, nozzle, lower_orientation, lower_lead_in
-);
-upper_path = structural_coupon_path(
-    boundary, process, nozzle, upper_orientation, 0
-);
-
-validate_rectangular_stack_coupon(
-    lower_points = lower_path,
-    upper_points = upper_path,
-    boundary = boundary,
-    process = process,
-    nozzle = nozzle,
-    lower_orientation = lower_orientation,
-    upper_orientation = upper_orientation,
-    lower_lead_in = lower_lead_in,
-    clear_vertical_gap = clear_vertical_gap
-);
-
-report_rectangular_stack_coupon(
-    lower_path,
-    upper_path,
-    boundary,
-    process,
-    nozzle,
-    clear_vertical_gap
-);
-
-if (render_mode == "structural_coupon") {
-    assert_coupon_print_geometry_supported(schedule);
-
-    printable_direct_contact_stack_coupon(
-        lower_path, upper_path, process, nozzle
+if (support_strategy == "direct_orthogonal") {
+    lower_path = structural_coupon_path(
+        boundary, process, nozzle, 0, lower_lead_in
     );
+    upper_path = structural_coupon_path(
+        boundary, process, nozzle, 90, 0
+    );
+
+    validate_direct_contact_stack_coupon(
+        lower_points = lower_path,
+        upper_points = upper_path,
+        boundary = boundary,
+        process = process,
+        nozzle = nozzle,
+        lower_orientation = 0,
+        upper_orientation = 90,
+        lower_lead_in = lower_lead_in,
+        clear_vertical_gap = 0
+    );
+
+    report_direct_contact_stack_coupon(
+        lower_path, upper_path, boundary, process, nozzle
+    );
+
+    if (render_mode == "structural_coupon")
+        printable_direct_contact_stack_coupon(
+            lower_path, upper_path, process, nozzle
+        );
 }
-else if (render_mode == "path_preview") {
+else if (support_strategy == "witness_riser_bridge") {
+    witness_path = structural_coupon_path(
+        boundary, process, nozzle, 90, lower_lead_in
+    );
+    riser_path = structural_coupon_path(
+        boundary, process, nozzle, 0, 0
+    );
+    test_path = structural_coupon_path(
+        boundary, process, nozzle, 90, 0
+    );
+
+    validate_positive_gap_stack_coupon(
+        witness_points = witness_path,
+        riser_points = riser_path,
+        test_points = test_path,
+        boundary = boundary,
+        process = process,
+        nozzle = nozzle,
+        lead_in = lower_lead_in,
+        clear_vertical_gap = clear_vertical_gap
+    );
+
+    report_positive_gap_stack_coupon(
+        witness_path,
+        riser_path,
+        test_path,
+        boundary,
+        process,
+        nozzle,
+        clear_vertical_gap
+    );
+
+    if (render_mode == "structural_coupon")
+        printable_vertical_gap_stack_coupon(
+            witness_path,
+            riser_path,
+            test_path,
+            process,
+            nozzle,
+            clear_vertical_gap
+        );
+}
+else {
+    assert(false, str("Unknown coupon support strategy: ", support_strategy));
+}
+
+if (render_mode == "path_preview") {
     generated_path = rectangular_serpentine_path(
         boundary, process, nozzle, path_policy_record, path_orientation
     );
@@ -143,6 +181,6 @@ else if (render_mode == "path_preview") {
 else if (render_mode == "report_only") {
     echo("Development report-only mode: no geometry generated.");
 }
-else {
+else if (render_mode != "structural_coupon") {
     assert(false, str("Unknown render mode: ", render_mode));
 }

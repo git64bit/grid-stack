@@ -2,23 +2,20 @@
 // LibFile: coupon_framework.scad
 // Project: Grid Stack
 // FileGroup: Framework Contract
-// FileSummary: Freezes the supported rectangular count-boundary coupon model
-//              and names the extension points that remain deliberately stubbed.
-// Role: Provides one validation and naming contract shared by the development
-//       workbench, contract tests, and the future immutable coupon API.
+// FileSummary: Freezes the supported rectangular count-boundary coupon model,
+//              including direct-contact and positive vertical-gap geometry.
+// Role: Provides one validation and naming contract shared by the workbench,
+//       contract tests, and immutable coupon API version 3.
 // Requires: Field indexes, boundary/process/path/stack mathematics, and
 //           nearly_equal() from list_math.scad.
-// Exports: Framework version, coupon naming helpers, schedule helpers,
-//          support predicates, validation, and stub assertions.
+// Exports: Framework version, coupon naming helpers, support predicates,
+//          validation, and deliberate deferred-feature assertions.
 //////////////////////////////////////////////////////////////////////
 
-GRID_STACK_RECTANGULAR_FRAMEWORK_VERSION = 1;
+GRID_STACK_RECTANGULAR_FRAMEWORK_VERSION = 2;
 
 // Function: coupon_project_name()
 // Synopsis: Returns the canonical project name for one coupon specification.
-// Description:
-//   The accepted zero-gap reference retains the _DIRECT suffix. Positive-gap
-//   names are independent of any future support implementation.
 function coupon_project_name(cells_x, cells_y, clear_span, clear_gap) =
     str(
         "COUPON_", cells_x, "X", cells_y,
@@ -29,16 +26,20 @@ function coupon_project_name(cells_x, cells_y, clear_span, clear_gap) =
 
 // Function: coupon_schedule_name()
 // Synopsis: Names a schedule by complete structural path-layer repetitions.
-// Description:
-//   XGRID1 and YGRID1 each mean one complete continuous serpentine grid layer,
-//   not one individual parallel strand.
 function coupon_schedule_name(clear_gap) =
-    str("XGRID1_GAP", clear_gap, "_YGRID1");
+    clear_gap == 0
+        ? "XGRID1_GAP0_YGRID1"
+        : str("YWITNESS1_GAP", clear_gap, "_YTEST1_RISERX");
 
 // Function: coupon_schedule_clear_gap()
-// Synopsis: Returns the clear Z distance between the lower and upper layers.
+// Synopsis: Returns the clear Z distance requested by the schedule.
 function coupon_schedule_clear_gap(schedule) =
     schedule[SS_GROUPS][0][PLG_CLEAR_GAP_AFTER];
+
+// Function: coupon_gap_layer_count()
+// Synopsis: Returns the raw deposited-layer count spanning the clear gap.
+function coupon_gap_layer_count(schedule, process) =
+    coupon_schedule_clear_gap(schedule) / trace_height(process);
 
 // Function: coupon_boundary_supported()
 // Synopsis: True only for the frozen count-driven rectangular boundary model.
@@ -56,24 +57,41 @@ function coupon_pattern_supported(pattern_set) =
         : false;
 
 // Function: coupon_schedule_supported()
-// Synopsis: True for one lower X and one upper Y full-grid path layer.
+// Synopsis: True for one lower and one upper complete path-layer declaration.
 function coupon_schedule_supported(schedule) =
     len(schedule[SS_GROUPS]) == 2
-        ? schedule[SS_GROUPS][0][PLG_ORIENTATION] == 0 &&
-          schedule[SS_GROUPS][1][PLG_ORIENTATION] == 90 &&
-          schedule[SS_GROUPS][0][PLG_LAYER_COUNT] == 1 &&
-          schedule[SS_GROUPS][1][PLG_LAYER_COUNT] == 1 &&
-          schedule[SS_GROUPS][0][PLG_CLEAR_GAP_AFTER] >= 0 &&
-          nearly_equal(schedule[SS_GROUPS][1][PLG_CLEAR_GAP_AFTER], 0)
+        ? let(
+            lower = schedule[SS_GROUPS][0],
+            upper = schedule[SS_GROUPS][1],
+            gap = lower[PLG_CLEAR_GAP_AFTER],
+            orientations_valid = nearly_equal(gap, 0)
+                ? lower[PLG_ORIENTATION] == 0 &&
+                  upper[PLG_ORIENTATION] == 90
+                : lower[PLG_ORIENTATION] == 90 &&
+                  upper[PLG_ORIENTATION] == 90
+          )
+          orientations_valid &&
+          lower[PLG_LAYER_COUNT] == 1 &&
+          upper[PLG_LAYER_COUNT] == 1 &&
+          gap >= 0 &&
+          nearly_equal(upper[PLG_CLEAR_GAP_AFTER], 0)
         : false;
 
 // Function: coupon_print_geometry_supported()
-// Synopsis: Reports whether the current solid generator can print the case.
-// Description:
-//   The framework accepts positive gaps as valid specifications. Batch 009
-//   intentionally leaves their support/anchor geometry as a named stub.
-function coupon_print_geometry_supported(schedule) =
-    nearly_equal(coupon_schedule_clear_gap(schedule), 0);
+// Synopsis: True when the gap is printable as a whole deposited-layer count.
+function coupon_print_geometry_supported(schedule, process) =
+    coupon_schedule_supported(schedule) &&
+    nearly_equal(
+        coupon_gap_layer_count(schedule, process),
+        round(coupon_gap_layer_count(schedule, process))
+    );
+
+// Function: coupon_support_strategy()
+// Synopsis: Selects the frozen geometry strategy from the requested gap.
+function coupon_support_strategy(schedule) =
+    nearly_equal(coupon_schedule_clear_gap(schedule), 0)
+        ? "direct_orthogonal"
+        : "witness_riser_bridge";
 
 // Module: validate_rectangular_coupon_framework()
 // Synopsis: Enforces the frozen rectangular coupon contract.
@@ -86,7 +104,7 @@ module validate_rectangular_coupon_framework(
     pattern_set_record,
     schedule
 ) {
-    assert(GRID_STACK_RECTANGULAR_FRAMEWORK_VERSION == 1,
+    assert(GRID_STACK_RECTANGULAR_FRAMEWORK_VERSION == 2,
         "Unexpected rectangular framework version.");
     assert(coupon_boundary_supported(boundary),
         str(
@@ -100,7 +118,12 @@ module validate_rectangular_coupon_framework(
             ". The frozen framework supports SQUARE_COUPON only."
         ));
     assert(coupon_schedule_supported(schedule),
-        "Coupon schedules require one complete X grid layer, one complete Y grid layer, and a nonnegative gap between them.");
+        "Direct schedules require X then Y; positive-gap schedules require aligned Y witness/test groups and a nonnegative gap.");
+    assert(coupon_print_geometry_supported(schedule, process),
+        str(
+            "Clear gap must be a whole deposited-layer count: ",
+            coupon_schedule_clear_gap(schedule), " / ", trace_height(process)
+        ));
     assert(path_policy_record[PP_REQUIRE_CONTINUOUS],
         "Coupon paths must be continuous.");
     assert(!path_policy_record[PP_ALLOW_TRAVEL] &&
@@ -131,13 +154,11 @@ module validate_rectangular_coupon_framework(
 }
 
 // Module: assert_coupon_print_geometry_supported()
-// Synopsis: Stops positive-gap rendering at the explicit Batch 009 stub.
-module assert_coupon_print_geometry_supported(schedule) {
-    clear_gap = coupon_schedule_clear_gap(schedule);
-
-    assert(coupon_print_geometry_supported(schedule),
+// Synopsis: Stops any gap not representable by complete deposited layers.
+module assert_coupon_print_geometry_supported(schedule, process) {
+    assert(coupon_print_geometry_supported(schedule, process),
         str(
-            "Vertical-gap geometry stub: ", clear_gap,
-            " mm is a valid frozen coupon specification, but printable anchor/support geometry is reserved for the next batch."
+            "Unsupported coupon gap: ", coupon_schedule_clear_gap(schedule),
+            " mm at ", trace_height(process), " mm deposited layers."
         ));
 }

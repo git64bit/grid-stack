@@ -2,8 +2,8 @@
 // LibFile: deferred_features.scad
 // Project: Grid Stack
 // FileGroup: Reserved Extension Points
-// FileSummary: Machine-readable registry of intentionally deferred framework
-//              features retained so later work does not lose their names.
+// FileSummary: Registry of intentionally deferred features retained so later
+//              work does not lose their names after the rectangular freeze.
 // Role: Documents stubs only. These records do not generate geometry and are
 //       rejected by the rectangular coupon framework validation contract.
 // Exports: DEFERRED_FEATURES and report_deferred_features().
@@ -36,14 +36,12 @@ DEFERRED_FEATURES = [
         "Transition continuously from two outer square rows to a hex interior."
     ],
     [
-        "positive_vertical_gap_support",
-        "geometry_stub",
-        "Build printable support or anchor geometry for 1-3 mm clear Z gaps."
+        "expanded_layer_schedules",
+        "schedule_stub",
+        "Generalize beyond the frozen direct and witness/riser coupon schedules."
     ]
 ];
 
-// Module: report_deferred_features()
-// Synopsis: Prints every reserved extension point and its current status.
 module report_deferred_features() {
     echo("--- Grid Stack deferred feature stubs ---");
     for (feature = DEFERRED_FEATURES)

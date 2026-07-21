@@ -2,7 +2,7 @@
 // LibFile: projects.scad
 // Project: Grid Stack
 // FileGroup: Configuration
-// FileSummary: Complete rectangular coupon project catalog plus one deferred
+// FileSummary: Printable rectangular coupon project catalog plus one deferred
 //              dimension/mixed-pattern tutorial stub.
 // Role: Generates project records from the frozen boundary and schedule names
 //       so the workbench no longer hardcodes one Batch 008 coupon.
@@ -35,7 +35,7 @@ COUPON_MATRIX_PROJECTS = [
                 pattern_set_name = "SQUARE_COUPON",
                 schedule_name = coupon_schedule_name(clear_gap),
                 notes = str(
-                    "Frozen coupon case: ", clear_span,
+                    "Printable coupon case: ", clear_span,
                     " mm XY clear span and ", clear_gap, " mm Z clear gap."
                 )
             )

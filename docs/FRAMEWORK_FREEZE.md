@@ -1,79 +1,79 @@
-# Rectangular Framework Freeze 1
+# Rectangular Framework Freeze
 
-Batch 009 freezes the architecture and terminology required for the urgent rectangular coupon series. It does not claim that every frozen specification is printable yet.
-
-## Supported core
-
-The active framework accepts only:
+## Frozen version
 
 ```text
-count_boundary()
-rectangle
-SQUARE_COUPON
-square turns
-one continuous open path per deposited layer
-one complete lower X grid layer
-one complete upper Y grid layer
-nonnegative clear Z gap
+GRID_STACK_RECTANGULAR_FRAMEWORK_VERSION = 2
+GRID_STACK_API_VERSION = 3
+GRID_STACK_COUPON_SCHEMA_VERSION = 1
 ```
 
-The boundary counts clear openings. A `3 × 3` boundary therefore contains four parallel structural runs in each direction.
+## Supported boundary
 
-## Corrected schedule unit
+```scad
+count_boundary(
+    name,
+    cells_x,
+    cells_y,
+    clear_span_x,
+    clear_span_y
+);
+```
 
-A schedule count does **not** mean one individual parallel strand. It means one complete continuous structural **path layer** covering the entire boundary.
+Cell counts refer to clear openings. A 3 × 3 boundary contains four structural strands in each direction. Outside dimensions are derived; no perimeter border is added.
+
+## Supported geometry strategies
+
+### `direct_orthogonal`
+
+Used only for the 0 mm reference:
 
 ```text
-primitive trace                 0.4 × 0.2 mm
-composed structural strand      0.8 × 0.4 mm
-complete structural path layer  one continuous serpentine using that section
+lower X structural grid
+upper Y structural grid in direct contact
 ```
 
-The frozen coupon schedule is therefore:
+### `witness_riser_bridge`
+
+Used for positive gaps:
 
 ```text
-one complete X path layer
-clear vertical gap
-one complete Y path layer
+lower Y witness grid
+X riser path repeated through the gap
+upper Y test grid aligned over the witness
 ```
 
-`path_layer_group()` is the correct constructor. `strand_group()` and the `SG_*` indexes remain compatibility aliases for API v1 and early lessons.
+The gap must equal a whole number of deposited layers.
 
-## Coupon catalog
-
-The matrix contains twelve positive-gap specifications:
+## Frozen process semantics
 
 ```text
-XY clear span: 5, 6, 7, 8 mm
-Z clear gap:   1, 2, 3 mm
-count:         3 × 3 clear openings
+primitive trace:       nozzle diameter × deposited layer height
+structural strand:     two or more traces wide × two or more layers high
+riser wall:            structural width × requested layer-quantized gap
 ```
 
-The accepted `6 mm / 0 mm` direct-contact print is a separate reference, giving thirteen named projects in total.
+For the current qualified process:
 
-Spans above the current 6 mm owner-tested bridge limit are valid exploratory coupons. They are reported as beyond the tested limit rather than rejected.
+```text
+trace:                  0.4 × 0.2 mm
+structural strand:      0.8 × 0.4 mm
+gap layers:             5, 10, or 15
+```
 
-## Printable status
+## Saved-object rule
 
-The direct-contact reference is implemented.
+Every permanent coupon imports `api/grid_stack_v3.scad`, embeds all exact records, and asserts the API, schema, and framework versions. Existing recipe files and API version 3 are immutable by convention.
 
-Positive-gap specifications are validated, named, dimensioned, and reportable, but their anchor/support geometry is an explicit stub. They must not silently render as unsupported floating solids.
+## Deferred names
 
-## Deferred stubs
+The following remain visible but unsupported:
 
-The following names remain in the project but are not active framework features:
+- `dimension_boundary`;
+- `circle_boundary`;
+- `regular_polygon_boundary`;
+- `custom_polygon_boundary`;
+- `mixed_square_hex_pattern`;
+- expanded layer schedules.
 
-- dimension-envelope boundaries;
-- circular boundaries;
-- regular and custom polygon boundaries;
-- mixed square/hex patterns;
-- the expanded 4-5-6-5-4 schedule;
-- positive-gap anchor/support geometry.
-
-Selecting a deferred project fails with a specific assertion rather than falling through to an unrelated generator.
-
-## API audit finding
-
-API versions 1 and 2 import some shared files. Their assertions identify a version, but those implementations are not fully isolated from later shared-library changes.
-
-The complete coupon set will use a new versioned API only after positive-gap geometry is accepted. That API must keep its implementation dependencies under its own versioned directory so an old recipe continues to reconstruct the same object.
+Selecting a deferred workbench project must fail explicitly rather than approximate.

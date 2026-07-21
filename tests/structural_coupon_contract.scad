@@ -3,10 +3,10 @@
 // Project: Grid Stack
 // FileGroup: Contract Test
 // FileSummary: Static assertions for the accepted direct-contact rectangular
-//              coupon under framework contract version 1.
-// Role: Verifies derived dimensions, path starts, point counts, stack
-//       composition, and the corrected path-layer schedule terminology.
-// Requires: Current workbench interface and rectangular coupon path modules.
+//              coupon under framework contract version 2.
+// Role: Verifies derived dimensions, path starts, point counts, composition,
+//       and immutable direct-contact strategy selection.
+// Requires: Current workbench foundation and rectangular coupon path modules.
 // Output: Console assertions only.
 //////////////////////////////////////////////////////////////////////
 
@@ -36,6 +36,7 @@ schedule = stack_schedule(
 lower = structural_coupon_path(boundary, process, nozzle, 0, 30);
 upper = structural_coupon_path(boundary, process, nozzle, 90, 0);
 
+assert(GRID_STACK_RECTANGULAR_FRAMEWORK_VERSION == 2);
 assert(nearly_equal(strand_width(process, nozzle), 0.8));
 assert(nearly_equal(strand_height(process), 0.4));
 assert(nearly_equal(boundary_size_x(boundary, process, nozzle), 21.2));
@@ -45,8 +46,7 @@ assert(len(upper) == 8);
 assert(nearly_equal(point_distance_2d(lower[1], upper[0]), 0));
 assert(path_is_axis_aligned(lower));
 assert(path_is_axis_aligned(upper));
-assert(total_scheduled_path_layers(schedule) == 2);
-assert(total_scheduled_layers(schedule, process) == 4);
-assert(coupon_print_geometry_supported(schedule));
+assert(coupon_print_geometry_supported(schedule, process));
+assert(coupon_support_strategy(schedule) == "direct_orthogonal");
 
 echo("GRID STACK STRUCTURAL COUPON CONTRACT: PASS");

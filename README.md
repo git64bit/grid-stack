@@ -2,90 +2,78 @@
 
 Grid Stack is an OpenSCAD project for continuous-nozzle-path structures, calibration sheets, and composite reinforcement grids.
 
-## Current framework
+## Frozen rectangular framework
 
-Batch 009 freezes the urgent coupon framework around:
+Version 1.0 freezes the urgent framework around:
 
 ```text
 count_boundary()
-rectangular 3 × 3 clear-opening grids
-square turns
+rectangular clear-opening grids
+square turns and square terminations
 one continuous open path per deposited layer
-0.8 × 0.4 mm composed structural strand
-one complete X grid layer
-one complete Y grid layer
+explicit material, nozzle, printer, and process records
+immutable saved-object recipes
 ```
 
-The accepted direct-contact reference remains the default project:
+The active calibration set contains thirteen objects:
 
 ```text
-COUPON_3X3_SPAN6_GAP0_DIRECT
+1 direct-contact reference: 6 mm span / 0 mm gap
+12 positive-gap coupons:    spans 5, 6, 7, 8 mm × gaps 1, 2, 3 mm
 ```
 
-The complete positive-gap matrix is now cataloged:
+## Positive-gap construction
+
+A positive-gap coupon is not floating geometry. It uses three continuous paths:
 
 ```text
-XY clear spans: 5, 6, 7, 8 mm
-Z clear gaps:   1, 2, 3 mm
-cases:          12
+upper Y test grid
+        ↑ supported by X riser walls
+X riser path repeated through the requested gap
+        ↑ begins on the witness crossings
+lower Y witness grid with the only external lead-in
 ```
 
-Positive-gap specifications are validated and reported, but printable anchor/support geometry remains an explicit stub. The project will not silently render unsupported floating coupon layers.
+The witness and upper test grids are vertically aligned. If a bridge sags by the selected clearance, it reaches the known witness strand below. Every riser layer repeats the same continuous open X path.
 
-## Correct schedule terminology
+## Workbench
 
-A schedule count represents one complete continuous **structural path layer**, not one individual parallel strand.
+Open `main.scad` and select any coupon project in the Customizer. The default is:
 
 ```text
-primitive trace                 0.4 × 0.2 mm
-composed structural strand      0.8 × 0.4 mm
-complete structural path layer  full serpentine using that section
+COUPON_3X3_SPAN6_GAP1
 ```
 
-New framework code uses `path_layer_group()`. The older `strand_group()` name remains as an API v1 compatibility wrapper.
-
-## First-layer tool
-
-Open:
+Output modes:
 
 ```text
-first-layer-0u2Z-anyXY.scad
-```
-
-It produces one primitive layer from independently configured parallel traces:
-
-```scad
-traces = [
-    [-10, 10,  0],
-    [ -8, 10,  5],
-    [ -8,  3, 15],
-    [ -6,  3, 16],
-    [ -6,  9, 18]
-];
-```
-
-Each record is `[axis_min, axis_max, perpendicular_position]`.
-
-## Output modes
-
-```text
-structural_coupon   printable direct-contact coupon, or explicit gap stub
+structural_coupon   printable coupon geometry
 path_preview        numbered non-printable centerline diagnostic
 report_only         validation and dimensions only
 ```
+
+## Permanent recipes
+
+The full set is under:
+
+```text
+objects/coupons/
+```
+
+Every recipe imports `api/grid_stack_v3.scad`, embeds all geometry-affecting values, asserts API/schema/framework versions, and calls one public rendering module.
+
+## First-layer tool
+
+`first-layer-0u2Z-anyXY.scad` remains the independent primitive-trace tool for first-layer calibration and anti-warp underlays.
 
 ## Deferred stubs
 
 The following remain named but inactive:
 
 - dimension-envelope fitting;
-- circular and polygon boundaries;
-- mixed square/hex patterns;
-- expanded 4-5-6-5-4 schedules;
-- positive-gap anchor/support geometry.
+- circular boundaries;
+- regular and custom polygon boundaries;
+- mixed square/hex pattern zones;
+- expanded schedules beyond the frozen coupon strategies.
 
-See `docs/FRAMEWORK_FREEZE.md` and `docs/LESSON_009.md`.
-
-## Versioned recipes
-
-Existing permanent first-layer recipes remain under `objects/printed/` and import explicit APIs. The full coupon set will receive a new isolated versioned API after positive-gap support geometry is accepted.
+See `docs/FRAMEWORK_FREEZE.md` and `docs/LESSON_010.md`.

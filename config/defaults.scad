@@ -2,15 +2,15 @@
 // LibFile: defaults.scad
 // Project: Grid Stack
 // FileGroup: User Interface
-// FileSummary: Customizer selection for the accepted reference, all twelve
-//              frozen coupon specifications, diagnostics, and reporting.
+// FileSummary: Customizer selection for the accepted direct reference, all
+//              twelve positive-gap coupons, diagnostics, and reporting.
 // Role: Contains user-facing selectors only. Engineering records remain in
-//       the configuration catalogs.
+//       the configuration catalogs and immutable files under objects/.
 // Exports: Project, render, path-preview, coupon-series, and report selectors.
 //////////////////////////////////////////////////////////////////////
 
 /* [Project selection] */
-project_name_selected = "COUPON_3X3_SPAN6_GAP0_DIRECT"; // [COUPON_3X3_SPAN6_GAP0_DIRECT,COUPON_3X3_SPAN5_GAP1,COUPON_3X3_SPAN5_GAP2,COUPON_3X3_SPAN5_GAP3,COUPON_3X3_SPAN6_GAP1,COUPON_3X3_SPAN6_GAP2,COUPON_3X3_SPAN6_GAP3,COUPON_3X3_SPAN7_GAP1,COUPON_3X3_SPAN7_GAP2,COUPON_3X3_SPAN7_GAP3,COUPON_3X3_SPAN8_GAP1,COUPON_3X3_SPAN8_GAP2,COUPON_3X3_SPAN8_GAP3,TUTORIAL_RECT_45654]
+project_name_selected = "COUPON_3X3_SPAN6_GAP1"; // [COUPON_3X3_SPAN6_GAP0_DIRECT,COUPON_3X3_SPAN5_GAP1,COUPON_3X3_SPAN5_GAP2,COUPON_3X3_SPAN5_GAP3,COUPON_3X3_SPAN6_GAP1,COUPON_3X3_SPAN6_GAP2,COUPON_3X3_SPAN6_GAP3,COUPON_3X3_SPAN7_GAP1,COUPON_3X3_SPAN7_GAP2,COUPON_3X3_SPAN7_GAP3,COUPON_3X3_SPAN8_GAP1,COUPON_3X3_SPAN8_GAP2,COUPON_3X3_SPAN8_GAP3,TUTORIAL_RECT_45654]
 
 /* [Render mode] */
 render_mode = "structural_coupon"; // [structural_coupon,path_preview,report_only]

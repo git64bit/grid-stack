@@ -2,10 +2,10 @@
 // LibFile: coupons.scad
 // Project: Grid Stack
 // FileGroup: Configuration
-// FileSummary: Frozen twelve-case positive-gap coupon matrix and the accepted
+// FileSummary: Printable twelve-case positive-gap coupon matrix and the accepted
 //              direct-contact reference identity.
 // Role: Defines test intent without duplicating boundary, schedule, or project
-//       records. Printable positive-gap support remains a geometry stub.
+//       records. Positive-gap geometry uses the frozen witness/riser/bridge strategy.
 // Requires: coupon_series(), count_boundary_name(), coupon_schedule_name(),
 //           COUPON_CLEAR_SPANS, and COUPON_VERTICAL_GAPS.
 // Exports: DIRECT_CONTACT_REFERENCE_PROJECT and COUPON_SERIES.

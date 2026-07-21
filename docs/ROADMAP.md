@@ -10,16 +10,17 @@
 - Batch 006: variable parallel first-layer traces.
 - Batch 007: immutable PLA+ and TPU first-layer recipes.
 - Batch 008: accepted direct-contact structural coupon.
-- Batch 009: rectangular framework audit and freeze.
+- Batch 009: rectangular framework audit and preliminary freeze.
+- Batch 010: positive-gap support, API version 3, and complete coupon recipes.
 
-## Batch 010
+## Frozen maintenance phase
 
-Design and qualify the positive-gap anchor/support geometry, publish an isolated rectangular coupon API, and generate the permanent recipe set:
+The rectangular count-boundary coupon framework is complete. Near-term work should be limited to:
 
-```text
-4 XY spans × 3 Z gaps = 12 coupons
-plus the accepted 6 mm / 0 mm reference
-```
+- physical coupon observations;
+- corrected recipes created as new revisions;
+- printer and material environment records;
+- defects that prevent the frozen coupons from reconstructing or printing.
 
 ## Deferred stubs
 
@@ -27,7 +28,7 @@ plus the accepted 6 mm / 0 mm reference
 - circular boundaries;
 - regular and custom polygon boundaries;
 - mixed square/hex pattern zones;
-- expanded 4-5-6-5-4 path-layer schedules;
+- expanded 4-5-6-5-4 schedules;
 - other connector strategies.
 
-Deferred features remain visible in code and documentation but do not compete with rectangular coupon completion.
+A deferred feature starts a new framework/API version rather than modifying API version 3.

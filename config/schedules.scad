@@ -2,7 +2,7 @@
 // LibFile: schedules.scad
 // Project: Grid Stack
 // FileGroup: Configuration
-// FileSummary: Frozen two-layer rectangular coupon schedules plus the deferred
+// FileSummary: Frozen rectangular coupon specifications plus the deferred
 //              multi-layer 4-5-6-5-4 schedule.
 // Role: Counts complete continuous structural path layers, not individual
 //       parallel strands and not raw slicer layers.
@@ -23,28 +23,45 @@ COUPON_STACK_SCHEDULES = [
     for (clear_gap = COUPON_ALL_VERTICAL_GAPS)
         stack_schedule(
             name = coupon_schedule_name(clear_gap),
-            groups = [
-                path_layer_group(
-                    orientation = 0,
-                    layer_count = 1,
-                    pattern_set_name = "SQUARE_COUPON",
-                    clear_gap_after = clear_gap,
-                    notes = "One complete lower X-running structural grid layer."
-                ),
-                path_layer_group(
-                    orientation = 90,
-                    layer_count = 1,
-                    pattern_set_name = "SQUARE_COUPON",
-                    clear_gap_after = 0,
-                    notes = "One complete upper Y-running structural grid layer."
-                )
-            ],
+            groups = clear_gap == 0
+                ? [
+                    path_layer_group(
+                        orientation = 0,
+                        layer_count = 1,
+                        pattern_set_name = "SQUARE_COUPON",
+                        clear_gap_after = 0,
+                        notes = "Accepted lower X direct-contact grid."
+                    ),
+                    path_layer_group(
+                        orientation = 90,
+                        layer_count = 1,
+                        pattern_set_name = "SQUARE_COUPON",
+                        clear_gap_after = 0,
+                        notes = "Accepted upper Y direct-contact grid."
+                    )
+                  ]
+                : [
+                    path_layer_group(
+                        orientation = 90,
+                        layer_count = 1,
+                        pattern_set_name = "SQUARE_COUPON",
+                        clear_gap_after = clear_gap,
+                        notes = "Lower Y witness grid; the X riser occupies the declared gap."
+                    ),
+                    path_layer_group(
+                        orientation = 90,
+                        layer_count = 1,
+                        pattern_set_name = "SQUARE_COUPON",
+                        clear_gap_after = 0,
+                        notes = "Upper Y test grid aligned above the witness."
+                    )
+                  ],
             require_symmetry = false,
             notes = clear_gap == 0
                 ? "Accepted direct-contact reference schedule."
                 : str(
-                    "Frozen ", clear_gap,
-                    " mm vertical-gap specification; support geometry is stubbed."
+                    "Printable ", clear_gap,
+                    " mm Y-witness/X-riser/Y-test calibration schedule."
                 )
         )
 ];

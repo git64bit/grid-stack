@@ -4,7 +4,9 @@
 
 **Nozzle specification** — Hardware record defining the nominal width basis of one pass.
 
-**Process profile** — Exact qualified combination of material, nozzle, layer height, pass composition, and tested behavior.
+**Printer specification** — Identity record for machine and build-surface hardware. An unknown machine is recorded explicitly as unrecorded.
+
+**Process profile** — Exact combination of material, nozzle, printer, layer height, pass composition, bridge observation, qualification, and revision.
 
 **Trace** — Material deposited by one nozzle pass in one layer. It is not accepted as a structural element by itself.
 
@@ -14,88 +16,50 @@
 
 **Strand height** — Layer height multiplied by vertical pass count.
 
-**Clear span** — Unsupported edge-to-edge opening between neighboring structural strands.
+**Clear span** — Unsupported edge-to-edge opening between neighboring structural supports.
 
-**Strand pitch** — Centerline distance between neighboring structural strands: clear span plus strand width.
-
-**Dimension-driven boundary** — Boundary whose required outside dimensions are authoritative.
+**Strand pitch** — Centerline distance between neighboring strands: clear span plus strand width.
 
 **Count-driven boundary** — Boundary whose clear-opening count and clear span are authoritative.
 
-**Grid cell count** — Number of clear openings. A count of `n` requires `n + 1` bounding structural strands.
+**Dimension-driven boundary** — Deferred boundary whose requested outside envelope is authoritative.
 
-**Clear vertical gap** — Empty Z distance between completed structural-strand groups.
+**Grid cell count** — Number of clear openings. A count of `n` requires `n + 1` bounding strands.
 
-**Stack schedule** — Ordered sequence of complete structural path-layer groups and clear vertical gaps.
+**Clear vertical gap** — Empty Z distance between the top of the lower witness and bottom of the upper test strand, except where the required riser walls cross the opening.
 
-**Coupon series** — Cartesian product of named coupon boundaries and named stack schedules.
+**Continuous path** — One open ordered centerline with no internal lift, travel move, seam, or disconnected island.
 
-**Unsupported span** — Distance crossed without existing material directly below the trace.
+**Lead-in** — Initial segment beginning outside the coupon and joining the first grid run without a lift or idle travel.
 
-**Continuous path** — One open path with no internal lift, travel move, seam, or disconnected island.
+**Square connector** — Perpendicular segment joining consecutive parallel runs as part of the same ordered path.
 
+**Direct-contact stack** — Accepted 0 mm reference with a lower X grid and upper Y grid in direct Z contact.
 
-## Ordered nozzle path
+**Witness grid** — Lower Y-running structural grid aligned directly below the upper test grid. It provides a known lower contact target for sag measurements.
 
-One list of centerline points traversed from index zero to the final index. Consecutive points define uninterrupted segments; separate point lists would represent separate paths.
+**Riser path** — X-running continuous path repeated through every raw layer of a positive vertical gap.
 
-## Lead-in
+**Riser wall** — Printed result of repeating the riser path through the selected gap height. It supports upper bridge endpoints while leaving the clear spans open.
 
-The first segment of the ordered path, beginning outside the coupon envelope and joining the first structural run without a lift or idle travel.
+**Upper test grid** — Y-running structural grid aligned above the witness and supported by the riser-wall tops.
 
-## Square connector
+**Witness/riser/bridge strategy** — Frozen positive-gap construction consisting of a witness grid, orthogonal riser walls, and aligned upper test grid.
 
-An axis-aligned path segment joining the end of one parallel run to the beginning of the next. It is part of the same ordered path, not a separate border.
+**Gap-layer count** — Clear vertical gap divided by deposited layer height. It must be an integer.
 
-## Saved object recipe
+**Complete structural path layer** — One complete continuous serpentine swept with the composed structural-strand cross-section.
 
-A top-level `.scad` file that embeds every geometry-affecting record and calls one versioned Grid Stack public module. It is the authoritative parametric definition of one printed construct.
+**Exploratory span** — Clear span intentionally beyond the current owner-tested bridge limit. It is a valid calibration case, not an invalid specification.
 
-## API version
+**Saved object recipe** — Top-level `.scad` file embedding every geometry-affecting record and calling one versioned public module.
 
-Integer identifying a compatible public Grid Stack constructor and execution contract. A recipe asserts the version it requires.
+**API version** — Integer identifying a compatible public constructor and rendering contract.
 
-## Object-schema version
+**Coupon-schema version** — Integer identifying the field layout and meaning of an immutable structural-coupon record.
 
-Integer identifying the field layout and meaning of the `grid_stack_object()` record.
+**Framework version** — Integer identifying the frozen supported geometry and validation rules.
 
-## Current API alias
+**Framework base commit** — Accepted repository commit used as the starting point for a new implementation batch. The later commit containing the recipe remains the authoritative complete source.
 
-`grid_stack.scad`, used for new development. Permanent recipes import an explicit file under `api/` instead.
-
-## Parallel trace
-A straight member of one deposited layer that shares an orientation with the other members in its sequence. Its length and perpendicular position are independently configured.
-
-## Repeat distance
-The centerline-to-centerline distance between consecutive parallel traces. It is the difference between their perpendicular positions.
-
-## Square connector
-The perpendicular segment joining two consecutive parallel traces without a lift or idle move. The connected trace endpoints must share the same coordinate along the trace axis.
-
-## First-layer object
-A saved recipe for geometry exactly one nozzle trace wide and one deposited layer high. It is useful for first-layer calibration and sacrificial underlays, but is not a composed structural strand.
-
-
-**Direct-contact stack**  
-Two completed structural paths placed with zero clear vertical gap. The upper
-path begins at a crossing supported by the lower path.
-
-**Structural ribbon**  
-The OpenSCAD solid swept along a structural path using the composed strand
-width and height derived from the process profile.
-
-## Complete structural path layer
-
-One complete continuous serpentine path across a boundary, swept with the composed structural-strand cross-section. This is the unit counted by current stack schedules.
-
-## Path-layer group
-
-A consecutive number of complete structural path layers sharing one orientation and pattern. Constructed with `path_layer_group()`.
-
-## Exploratory span
-
-A clear span intentionally beyond the current owner-tested bridge limit. It is a valid calibration case, not an invalid specification.
-
-## Framework stub
-
-A named extension point that is retained and rejected explicitly until its geometry and validation rules are implemented.
+**Framework stub** — Named extension point rejected explicitly until its geometry and validation rules are implemented.

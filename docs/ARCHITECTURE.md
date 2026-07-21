@@ -8,31 +8,47 @@
 2. load Customizer selectors and catalogs;
 3. resolve named records;
 4. validate the general data model;
-5. validate the frozen rectangular coupon contract;
-6. generate lower and upper continuous paths;
-7. render direct contact, preview paths, or stop at an explicit stub.
+5. validate rectangular framework version 2;
+6. select direct or positive-gap support strategy;
+7. generate ordered paths;
+8. validate and report the paths;
+9. render printable geometry or diagnostics.
 
-The workbench is for development and qualification. Permanent printed objects belong under `objects/`.
+The workbench is for exploration and qualification. Permanent objects belong under `objects/`.
 
-## Frozen rectangular coupon route
+## Frozen rectangular routes
+
+### Direct-contact reference
 
 ```text
-material + nozzle + qualified process
+qualified process
         ↓
 count_boundary rectangle
         ↓
-SQUARE_COUPON topology
+continuous lower X path with lead-in
         ↓
-one continuous lower X path
+continuous upper Y path
         ↓
-one continuous upper Y path
-        ↓
-complete structural path-layer schedule
-        ↓
-direct-contact solid or positive-gap stub
+direct-contact solid
 ```
 
-`lib/coupon_framework.scad` is the central contract. It prevents deferred boundary and pattern records from entering the active route.
+### Positive-gap coupon
+
+```text
+qualified process
+        ↓
+count_boundary rectangle
+        ↓
+continuous lower Y witness with lead-in
+        ↓
+continuous X riser path repeated through gap
+        ↓
+continuous upper Y test aligned above witness
+        ↓
+positive-gap solid
+```
+
+The riser path creates physical access to the upper grid without independent supports, lift moves, or floating geometry.
 
 ## Terminology layers
 
@@ -47,25 +63,13 @@ structural strand section
 structural path layer
     one complete continuous serpentine swept with the strand section
 
-schedule group
-    repetitions of a complete structural path layer
+riser wall
+    the structural-width path repeated through a layer-quantized gap
 ```
-
-The `PLG_*` indexes and `path_layer_group()` constructor express the frozen terminology. `SG_*` and `strand_group()` remain compatibility aliases.
 
 ## Configuration layer
 
-`config/` contains mutable records:
-
-- materials, nozzles, and qualified processes;
-- active count boundaries and deferred boundary stubs;
-- square coupon topology and mixed-pattern stub;
-- complete path-layer schedules;
-- twelve-case coupon matrix;
-- named projects;
-- deferred feature registry.
-
-Configuration files do not create solids.
+`config/` contains mutable records for materials, nozzles, processes, active count boundaries, square coupon topology, coupon gap declarations, named projects, and deferred stubs. Configuration files do not create solids.
 
 ## Path and geometry layers
 
@@ -73,14 +77,27 @@ Configuration files do not create solids.
 
 `geometry/` converts validated paths into solids and does not select projects.
 
-The current structural solid implementation supports zero vertical gap. Positive gaps require a support/anchor strategy and are blocked by the framework stub.
+- `orthogonal_stack_coupon.scad` implements the direct reference.
+- `vertical_gap_coupon.scad` implements the witness/riser/bridge strategy.
 
 ## Saved objects and API isolation
 
-A permanent recipe must import an explicit versioned API, embed exact records, assert the API version, and call one public render module.
+Permanent coupon recipes import `api/grid_stack_v3.scad`.
 
-The audit found that API versions 1 and 2 still import some shared implementation files. The next coupon API must keep all behavior-affecting dependencies inside its own versioned directory before the coupon recipes are frozen.
+All behavior-affecting API v3 dependencies are inside `api/v3/`:
+
+```text
+indices
+schema
+math
+paths
+geometry
+validation
+reporting
+```
+
+API v3 does not import mutable workbench files. Incompatible changes require API version 4 rather than modification of version 3.
 
 ## Deferred route
 
-Dimension boundaries, circles, polygons, mixed square/hex patterns, and expanded stacks remain named records. They fail framework validation intentionally and do not receive partial implementations during rectangular coupon work.
+Dimension boundaries, circles, polygons, mixed square/hex patterns, and expanded schedules remain named stubs. They fail workbench framework validation intentionally and do not receive partial implementations during rectangular maintenance.

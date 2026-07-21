@@ -4,9 +4,9 @@
 // FileGroup: Reporting
 // FileSummary: Expands the frozen span-by-gap coupon matrix and reports the
 //              separate accepted direct-contact reference.
-// Role: Makes every planned coupon dimension, qualification status, and print
-//       implementation status visible without creating geometry.
-// Requires: Catalogs, lookup, boundary math, stack math, and process math.
+// Role: Makes every coupon dimension, qualification status, support strategy,
+//       and print implementation status visible without creating geometry.
+// Requires: Catalogs, lookup, boundary math, stack math, and framework math.
 // Exports: bridge_case_status() and report_coupon_series().
 //////////////////////////////////////////////////////////////////////
 
@@ -25,14 +25,14 @@ module report_coupon_series(series) {
         len(series[CS_BOUNDARIES]) * len(series[CS_SCHEDULES])));
     echo(str("Direct-contact reference project: ",
         DIRECT_CONTACT_REFERENCE_PROJECT));
-    echo("Each row: [boundary, schedule, XY span, Z gap, size X, size Y, stack height, span status, geometry status]");
+    echo("Each row: [boundary, schedule, XY span, Z gap, size X, size Y, stack height, span status, support strategy, geometry status]");
 
     for (boundary_name = series[CS_BOUNDARIES]) {
         boundary = named_record(BOUNDARIES, boundary_name, "boundary");
 
         for (schedule_name = series[CS_SCHEDULES]) {
             schedule = named_record(STACK_SCHEDULES, schedule_name, "stack schedule");
-            clear_gap = scheduled_clear_height(schedule);
+            clear_gap = coupon_schedule_clear_gap(schedule);
             echo([
                 boundary[B_NAME],
                 schedule[SS_NAME],
@@ -42,9 +42,10 @@ module report_coupon_series(series) {
                 boundary_size_y(boundary, process, nozzle),
                 scheduled_height(schedule, process),
                 bridge_case_status(boundary[B_CLEAR_SPAN_X], process),
-                coupon_print_geometry_supported(schedule)
+                coupon_support_strategy(schedule),
+                coupon_print_geometry_supported(schedule, process)
                     ? "implemented"
-                    : "stub_requires_anchor_support"
+                    : "invalid_layer_quantization"
             ]);
         }
     }
