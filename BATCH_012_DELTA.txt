@@ -1,0 +1,23 @@
+Batch 012 delta
+Base commit: d066beb
+
+New:
+- config/workbenches.scad
+- registries/coupon_projects.scad
+- registries/catalog_projects.scad
+- registries/laboratory_projects.scad
+- workbenches/coupons.scad
+- workbenches/catalog.scad
+- workbenches/laboratory.scad
+- tests/workbench_registry_contract.scad
+
+Changed:
+- default.scad
+- main.scad
+- config/defaults.scad
+- config/projects.scad
+- tests/workbench_wrapper_contract.scad
+- VERSION
+- BASE_SHA
+
+Deleted: none

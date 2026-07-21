@@ -1,16 +1,15 @@
 //////////////////////////////////////////////////////////////////////
 // LibFile: default.scad
 // Project: Grid Stack
-// FileGroup: Workbench Entry Point
-// FileSummary: Executable user-facing wrapper for the Grid Stack workbench.
-// Role: Owns Customizer values, then includes main.scad to validate, report,
-//       and render the selected object. Generated wrappers may use the same
-//       contract without modifying the framework.
+// FileGroup: Development Workbench Entry Point
+// FileSummary: Executable cross-project wrapper for framework development.
+// Role: Owns the broad Customizer used by maintainers. Normal users should
+//       open a specialized file under workbenches/.
 // Includes: main.scad after all user-facing assignments.
 //////////////////////////////////////////////////////////////////////
 
 /* [Project selection] */
-project_name_selected = "COUPON_3X3_SPAN6_GAP1"; // [COUPON_3X3_SPAN6_GAP0_DIRECT,COUPON_3X3_SPAN5_GAP1,COUPON_3X3_SPAN5_GAP2,COUPON_3X3_SPAN5_GAP3,COUPON_3X3_SPAN6_GAP1,COUPON_3X3_SPAN6_GAP2,COUPON_3X3_SPAN6_GAP3,COUPON_3X3_SPAN7_GAP1,COUPON_3X3_SPAN7_GAP2,COUPON_3X3_SPAN7_GAP3,COUPON_3X3_SPAN8_GAP1,COUPON_3X3_SPAN8_GAP2,COUPON_3X3_SPAN8_GAP3,TUTORIAL_RECT_45654]
+project_name_selected = "COUPON_3X3_SPAN6_GAP1"; // [COUPON_3X3_SPAN6_GAP0_DIRECT,COUPON_3X3_SPAN5_GAP1,COUPON_3X3_SPAN5_GAP2,COUPON_3X3_SPAN5_GAP3,COUPON_3X3_SPAN6_GAP1,COUPON_3X3_SPAN6_GAP2,COUPON_3X3_SPAN6_GAP3,COUPON_3X3_SPAN7_GAP1,COUPON_3X3_SPAN7_GAP2,COUPON_3X3_SPAN7_GAP3,COUPON_3X3_SPAN8_GAP1,COUPON_3X3_SPAN8_GAP2,COUPON_3X3_SPAN8_GAP3,CATALOG_WORKBENCH_STUB,TUTORIAL_RECT_45654]
 
 /* [Render mode] */
 render_mode = "structural_coupon"; // [structural_coupon,path_preview,report_only]
@@ -31,4 +30,5 @@ report_deferred_features_enabled = false;
 report_level = "full"; // [summary,full]
 
 /* [Hidden] */
+workbench_name = "development";
 include <main.scad>

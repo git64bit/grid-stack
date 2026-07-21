@@ -4,9 +4,13 @@
 // FileGroup: Workbench Configuration
 // FileSummary: Resolves wrapper inputs into internal workbench values.
 // Role: Provides fallback values when main.scad is opened directly and accepts
-//       values supplied by default.scad, another generated wrapper, or -D.
+//       values supplied by a specialized workbench, generated wrapper, or -D.
 // Exports: wb_* values consumed only by main.scad.
 //////////////////////////////////////////////////////////////////////
+
+wb_workbench_name = is_undef(workbench_name)
+    ? "development"
+    : workbench_name;
 
 wb_project_name = is_undef(project_name_selected)
     ? "COUPON_3X3_SPAN6_GAP1"

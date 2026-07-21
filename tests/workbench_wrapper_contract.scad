@@ -2,19 +2,20 @@
 // LibFile: workbench_wrapper_contract.scad
 // Project: Grid Stack
 // FileGroup: Contract Test
-// FileSummary: Proves that an executable wrapper can supply workbench inputs.
-// Role: Mimics a future generated wrapper without modifying main.scad.
-// Expected: Report-only validation completes for the selected project.
+// FileSummary: Verifies wrapper fallback resolution and workbench identity.
 //////////////////////////////////////////////////////////////////////
 
-project_name_selected = "COUPON_3X3_SPAN5_GAP2";
-render_mode = "report_only";
-path_orientation = 90;
-show_boundary_envelope = false;
-show_path_point_numbers = false;
-report_coupon_series_enabled = false;
-coupon_series_name_selected = "PLA_PLUS_BRIDGE_GAP_3X3";
-report_deferred_features_enabled = false;
-report_level = "summary";
+include <../config/defaults.scad>
 
-include <../main.scad>
+assert(wb_workbench_name == "development",
+    "Direct main.scad fallback must use the development workbench.");
+assert(wb_project_name == "COUPON_3X3_SPAN6_GAP1",
+    "Default project fallback changed unexpectedly.");
+assert(wb_render_mode == "structural_coupon",
+    "Default render-mode fallback changed unexpectedly.");
+assert(wb_path_orientation == 0,
+    "Default path orientation changed unexpectedly.");
+assert(wb_report_level == "full",
+    "Default report level changed unexpectedly.");
+
+echo("GRID STACK WORKBENCH WRAPPER CONTRACT: PASS");
