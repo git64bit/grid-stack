@@ -54,6 +54,8 @@ include <paths/structural_coupon_paths.scad>
 include <geometry/structural_strand.scad>
 include <geometry/orthogonal_stack_coupon.scad>
 include <geometry/vertical_gap_coupon.scad>
+include <geometry/alternating_grid_stack.scad>
+include <lib/laboratory_grid_stack.scad>
 include <lib/structural_coupon_validation.scad>
 include <lib/coupon_reporting.scad>
 include <lib/structural_coupon_reporting.scad>
@@ -217,6 +219,95 @@ module run_rectangular_grid_project() {
     }
 }
 
+
+module run_laboratory_grid_panel() {
+    project = named_record(PROJECTS, wb_project_name, "project");
+    process = named_record(
+        PROCESS_PROFILES, project[PR_PROCESS], "process profile"
+    );
+    material = named_record(MATERIALS, process[PX_MATERIAL], "material");
+    nozzle = named_record(NOZZLES, process[PX_NOZZLE], "nozzle");
+    boundary = named_record(BOUNDARIES, project[PR_BOUNDARY], "boundary");
+    path_policy_record = named_record(
+        PATH_POLICIES, project[PR_PATH_POLICY], "path policy"
+    );
+    pattern_set_record = named_record(
+        PATTERN_SETS, project[PR_PATTERN_SET], "pattern set"
+    );
+
+    validate_material(material);
+    validate_nozzle(nozzle);
+    validate_process(process, material, nozzle);
+    validate_boundary(boundary, process, nozzle);
+    validate_path_policy(path_policy_record);
+    validate_pattern_set(pattern_set_record, boundary, process, nozzle);
+
+    validate_laboratory_grid_stack(
+        project,
+        process,
+        nozzle,
+        boundary,
+        path_policy_record,
+        pattern_set_record,
+        wb_lab_deposited_layer_count,
+        wb_lab_first_layer_orientation
+    );
+
+    report_laboratory_grid_stack(
+        project,
+        process,
+        material,
+        nozzle,
+        boundary,
+        path_policy_record,
+        wb_lab_deposited_layer_count,
+        wb_lab_first_layer_orientation,
+        wb_report_level
+    );
+
+    report_grid_stack_core_contract();
+
+    if (wb_render_mode == "structural_grid")
+        printable_alternating_grid_stack(
+            boundary = boundary,
+            process = process,
+            nozzle = nozzle,
+            deposited_layer_count = wb_lab_deposited_layer_count,
+            first_orientation = laboratory_orientation_degrees(
+                wb_lab_first_layer_orientation
+            ),
+            lead_in = path_policy_record[PP_LEAD_IN]
+        );
+    else if (wb_render_mode == "path_preview") {
+        preview_orientation = laboratory_orientation_degrees(
+            wb_lab_first_layer_orientation
+        );
+        generated_path = structural_coupon_path(
+            boundary,
+            process,
+            nozzle,
+            preview_orientation,
+            path_policy_record[PP_LEAD_IN]
+        );
+
+        diagnostic_path_preview(
+            points = generated_path,
+            boundary_size = [
+                boundary_size_x(boundary, process, nozzle),
+                boundary_size_y(boundary, process, nozzle)
+            ],
+            show_envelope = wb_show_boundary_envelope,
+            show_point_numbers = wb_show_path_point_numbers
+        );
+    }
+    else if (wb_render_mode == "report_only")
+        echo("Laboratory grid report-only mode: no geometry generated.");
+    else
+        assert(false, str(
+            "Unknown laboratory grid render mode: ", wb_render_mode
+        ));
+}
+
 module run_registered_stub(stub_kind) {
     project = named_record(PROJECTS, wb_project_name, "project");
     report_stub_workbench(stub_kind, project, wb_report_level);
@@ -239,8 +330,10 @@ selected_is_laboratory_printable =
 selected_is_laboratory_deferred =
     len(records_named(LABORATORY_DEFERRED_PROJECTS, wb_project_name)) == 1;
 
-if (selected_is_coupon || selected_is_laboratory_printable)
+if (selected_is_coupon)
     run_rectangular_grid_project();
+else if (selected_is_laboratory_printable)
+    run_laboratory_grid_panel();
 else if (selected_is_catalog)
     run_registered_stub("catalog");
 else if (selected_is_laboratory_deferred)

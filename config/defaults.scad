@@ -56,3 +56,9 @@ wb_lab_cells_y = is_undef(lab_cells_y) ? 9 : lab_cells_y;
 wb_lab_clear_span_x = is_undef(lab_clear_span_x) ? 6 : lab_clear_span_x;
 wb_lab_clear_span_y = is_undef(lab_clear_span_y) ? 6 : lab_clear_span_y;
 wb_lab_lead_in = is_undef(lab_lead_in) ? 30 : lab_lead_in;
+wb_lab_deposited_layer_count = is_undef(lab_deposited_layer_count)
+    ? 8
+    : lab_deposited_layer_count;
+wb_lab_first_layer_orientation = is_undef(lab_first_layer_orientation)
+    ? "X"
+    : lab_first_layer_orientation;

@@ -35,11 +35,14 @@ lab_clear_span_y = 6; // [0.4:0.2:20]
 /* [Continuous path] */
 lab_lead_in = 30; // [0:1:100]
 
+/* [Layer stack] */
+lab_deposited_layer_count = 8; // [1:1:100]
+lab_first_layer_orientation = "X"; // [X,Y]
+
 /* [Render mode] */
 render_mode = "structural_grid"; // [structural_grid,path_preview,report_only]
 
 /* [Path diagnostic] */
-path_orientation = 0; // [0:X-running,90:Y-running]
 show_boundary_envelope = true;
 show_path_point_numbers = true;
 
