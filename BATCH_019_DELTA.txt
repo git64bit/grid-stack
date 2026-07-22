@@ -1,0 +1,25 @@
+Batch 019: make the active rectangular-grid generator self-contained
+Base release commit: d2dacc7
+Version: 1.0.9
+
+User-confirmed deletions already applied before this batch:
+- geometry/structural_strand.scad
+- lib/laboratory_grid_stack.scad
+
+Changed files:
+- BASE_SHA
+- VERSION
+- paths/rectangular_grid.scad
+- docs/ARCHITECTURE.md
+- tests/README.md
+
+New files:
+- BATCH_019_DELTA.txt
+- tests/rectangular_grid_standalone_contract.scad
+
+Decision on the parallel API v1 pipeline:
+- retained as a frozen compatibility interface;
+- not used by any active Workbench;
+- no longer supplies private helpers to rectangular_grid.scad.
+
+The archive contains only new or changed files. No additional deletions are required.

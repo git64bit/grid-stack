@@ -9,6 +9,7 @@ Retained contracts:
 - `laboratory_grid_contract.scad` — configurable rectangular Laboratory contract;
 - `laboratory_layer_height_contract.scad` — unrestricted positive deposited-layer height and direct-contact stacking;
 - `parallel_trace_contract.scad` — variable parallel-trace path semantics;
+- `rectangular_grid_standalone_contract.scad` — active grid-path generation without the legacy API v1 include chain;
 - `printed_first_layer_v2_contract.scad` — immutable API version 2 first-layer recipes;
 - `workbench_registry_contract.scad` — project registry separation;
 - `workbench_wrapper_contract.scad` — wrapper defaults and render-mode routing.

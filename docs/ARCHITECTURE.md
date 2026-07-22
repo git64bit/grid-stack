@@ -41,6 +41,12 @@ printable_alternating_grid_stack()
 
 The workbench changes records, not topology. Every deposited layer is one continuous open path. Successive layers alternate X/Y and remain in direct contact.
 
+`paths/rectangular_grid.scad` owns its X-running and Y-running serpentine helpers. The active generator therefore has no dependency on the legacy API v1 rectangular-serpentine file or on global include order.
+
+## Legacy API v1 compatibility route
+
+`grid_stack_render()` and `paths/rectangular_serpentine.scad` remain available only as the frozen API v1 saved-object interface. No active Workbench routes through that pipeline. It is retained to avoid silently breaking external or historical API v1 recipes.
+
 ## First-layer route
 
 The First Layer workbench uses the independent variable parallel-trace grammar. It builds a mutable `first_layer_object()` and renders through API version 1 validation and geometry. Accepted historical first-layer recipes remain isolated under versioned APIs.
